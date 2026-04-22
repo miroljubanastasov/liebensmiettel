@@ -1,0 +1,385 @@
+{
+  "purchase_date": "2026-04-11",
+  "store_name": "LIDL",
+  "store_city": "90513 Zirndorf",
+  "generated_at": "2026-04-11T22:20:23.185Z",
+  "prices": [
+    {
+      "ean": "4056489030843",
+      "product_name": "Gouda Holland jung",
+      "brand": "Lidl, Milbona",
+      "quantity_text": "450g",
+      "store_name": "LIDL",
+      "store_city": "90513 Zirndorf",
+      "price": 3.79,
+      "unit_price": 0.84,
+      "receipt_name": "Holland. Gouda jung",
+      "match_score": 0.8,
+      "observed_at": "2026-04-11"
+    },
+    {
+      "ean": "4335619009875",
+      "product_name": "Mozzarella",
+      "brand": "Milbona",
+      "quantity_text": "250g",
+      "store_name": "LIDL",
+      "store_city": "90513 Zirndorf",
+      "price": 1.79,
+      "unit_price": 0.72,
+      "receipt_name": "Mozzarella gerieben",
+      "match_score": 0.5,
+      "observed_at": "2026-04-11"
+    },
+    {
+      "ean": "4056489530282",
+      "product_name": "Norwegische Lachsfilet",
+      "brand": "Fischerstolz",
+      "quantity_text": "300g",
+      "store_name": "LIDL",
+      "store_city": "90513 Zirndorf",
+      "price": 5.79,
+      "unit_price": 1.93,
+      "receipt_name": "tachsfilet nit Haut",
+      "match_score": 0.33,
+      "observed_at": "2026-04-11"
+    },
+    {
+      "ean": "20250140",
+      "product_name": "Birne",
+      "brand": "Frutas Lozano",
+      "quantity_text": "1kg",
+      "store_name": "LIDL",
+      "store_city": "90513 Zirndorf",
+      "price": 1.79,
+      "unit_price": 0.18,
+      "receipt_name": "Birnen",
+      "match_score": 0.67,
+      "observed_at": "2026-04-11"
+    },
+    {
+      "ean": "4056489423874",
+      "product_name": "Laugenstangen",
+      "brand": "Grafschafter, Lidl",
+      "quantity_text": "8pcs",
+      "store_name": "LIDL",
+      "store_city": "90513 Zirndorf",
+      "price": 1.99,
+      "unit_price": null,
+      "receipt_name": "Laugenstange",
+      "match_score": 0.67,
+      "observed_at": "2026-04-11"
+    },
+    {
+      "ean": "40884417",
+      "product_name": "Frischer Pizzateig",
+      "brand": "Chef select",
+      "quantity_text": "550 g",
+      "store_name": "LIDL",
+      "store_city": "90513 Zirndorf",
+      "price": 1.29,
+      "unit_price": 0.23,
+      "receipt_name": "XXL Pizzateig",
+      "match_score": 0.38,
+      "observed_at": "2026-04-11"
+    },
+    {
+      "ean": "4056489143932",
+      "product_name": "Fischstäbchen",
+      "brand": "Ocean Sea",
+      "quantity_text": "450g",
+      "store_name": "LIDL",
+      "store_city": "90513 Zirndorf",
+      "price": 2.49,
+      "unit_price": 0.55,
+      "receipt_name": "MSC Fischstabohen",
+      "match_score": 0.42,
+      "observed_at": "2026-04-11"
+    },
+    {
+      "ean": "4056489705567",
+      "product_name": "Frische Eier aus Freilandhaltung Güteklasse A",
+      "brand": "Lidl",
+      "quantity_text": "10",
+      "store_name": "LIDL",
+      "store_city": "90513 Zirndorf",
+      "price": 2.99,
+      "unit_price": null,
+      "receipt_name": "Eier 10er Freilandh",
+      "match_score": 0.5,
+      "observed_at": "2026-04-11"
+    },
+    {
+      "ean": "4056489600480",
+      "product_name": "Delikates kochschinken",
+      "brand": "Dulano",
+      "quantity_text": null,
+      "store_name": "LIDL",
+      "store_city": "90513 Zirndorf",
+      "price": 2.89,
+      "unit_price": null,
+      "receipt_name": "Delik. Kochschinken",
+      "match_score": 0.83,
+      "observed_at": "2026-04-11"
+    },
+    {
+      "ean": "4335619197114",
+      "product_name": "Delikatess Bacon",
+      "brand": "Dulano",
+      "quantity_text": "100g",
+      "store_name": "LIDL",
+      "store_city": "90513 Zirndorf",
+      "price": 1.29,
+      "unit_price": 1.29,
+      "receipt_name": "Bacon Scheiben",
+      "match_score": 0.42,
+      "observed_at": "2026-04-11"
+    },
+    {
+      "ean": "20139124",
+      "product_name": "Blätterteig",
+      "brand": "chef select",
+      "quantity_text": "275g",
+      "store_name": "LIDL",
+      "store_city": "90513 Zirndorf",
+      "price": 0.95,
+      "unit_price": 0.35,
+      "receipt_name": "Blätterteig",
+      "match_score": 0.67,
+      "observed_at": "2026-04-11"
+    },
+    {
+      "ean": "4056489607830",
+      "product_name": "Bockwürstschen",
+      "brand": "Dulano,Lidl,Sutter",
+      "quantity_text": "500g",
+      "store_name": "LIDL",
+      "store_city": "90513 Zirndorf",
+      "price": 3.89,
+      "unit_price": 0.78,
+      "receipt_name": "Bockwiirstchen i.E",
+      "match_score": 0.63,
+      "observed_at": "2026-04-11"
+    },
+    {
+      "ean": "4000521593506",
+      "product_name": "Löffelglück Sahne Pudding Bourbon Vanille",
+      "brand": "Dr. Oetker",
+      "quantity_text": "500g",
+      "store_name": "LIDL",
+      "store_city": "90513 Zirndorf",
+      "price": 2.69,
+      "unit_price": 0.54,
+      "receipt_name": "Dr. Oetker Vanille p",
+      "match_score": 0.71,
+      "observed_at": "2026-04-11"
+    }
+  ],
+  "unmatched_products": [
+    {
+      "ean": "4056489030812",
+      "product_name": "Gouda Jung",
+      "brand": "Lidl, Milbona",
+      "reason": "no_receipt_match"
+    },
+    {
+      "ean": "4056489405030",
+      "product_name": null,
+      "brand": null,
+      "reason": "no_off_data"
+    },
+    {
+      "ean": "4056489619666",
+      "product_name": null,
+      "brand": null,
+      "reason": "no_off_data"
+    },
+    {
+      "ean": "4056489031505",
+      "product_name": null,
+      "brand": null,
+      "reason": "no_off_data"
+    },
+    {
+      "ean": "4056489089797",
+      "product_name": null,
+      "brand": null,
+      "reason": "no_off_data"
+    },
+    {
+      "ean": "4056489186328",
+      "product_name": null,
+      "brand": null,
+      "reason": "no_off_data"
+    },
+    {
+      "ean": "20281687",
+      "product_name": null,
+      "brand": null,
+      "reason": "no_off_data"
+    },
+    {
+      "ean": "4056489620648",
+      "product_name": null,
+      "brand": null,
+      "reason": "no_off_data"
+    },
+    {
+      "ean": "20240219",
+      "product_name": null,
+      "brand": null,
+      "reason": "no_off_data"
+    }
+  ],
+  "unmatched_receipt_items": [
+    {
+      "receipt_name": "Banane Fair Bio      i",
+      "price": 0.86,
+      "quantity": 0.432,
+      "unit": "kg"
+    },
+    {
+      "receipt_name": "Bio Kiwi",
+      "price": 2.79,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Tomaten gestr. Prem",
+      "price": 2.99,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Apfel rot",
+      "price": 1.69,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Cocktailstr. Tomaten",
+      "price": 3.69,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Gurken",
+      "price": 0.66,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Mandarinen",
+      "price": 2.99,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Knusper Gockelchen",
+      "price": 3.29,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Frischkäse Sahne",
+      "price": 1.59,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "EgSB Dt. Markenbutt",
+      "price": 1.69,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Mozzarella Rolle",
+      "price": 1.29,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Leberwurst i.B. fein",
+      "price": 1.29,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Gouda Scheiben 48%",
+      "price": 2.49,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Rapsöl 11",
+      "price": 3.18,
+      "quantity": 2,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Tomate Frito          0,7 x 2",
+      "price": 1.58,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Hühnerbrühwürfel",
+      "price": 0.59,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Klare Fleischsuppe",
+      "price": 0.59,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Penne Rigate",
+      "price": 0.69,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "spaghetti",
+      "price": 0.69,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Thunfisch in öl",
+      "price": 4.99,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "PringleSourCre&0nicn",
+      "price": 2.49,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Butterwaffeln Karame",
+      "price": 3.49,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Red Band Schnuller",
+      "price": 1.99,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Erdnussflips",
+      "price": 0.99,
+      "quantity": 1,
+      "unit": "pc"
+    },
+    {
+      "receipt_name": "Brot Fladen So",
+      "price": 1.78,
+      "quantity": 2,
+      "unit": "pc"
+    }
+  ]
+}

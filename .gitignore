@@ -28,6 +28,14 @@ dist-ssr
 .env.local
 .env.*.local
 
+# Local purchase data (personal financial data — do not commit)
+purchases/**/receipt/*.json
+purchases/**/barcodes/*
+!purchases/**/.gitkeep
+
 # Supabase local dev
 supabase/.branches
 supabase/.temp
+
+# OpenMoji audit cache
+scripts/.openmoji-cache.json

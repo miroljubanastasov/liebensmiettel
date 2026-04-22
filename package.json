@@ -11,11 +11,16 @@
     "supabase:start": "npx supabase start",
     "supabase:stop": "npx supabase stop",
     "supabase:reset": "npx supabase db reset",
-    "supabase:types": "npx supabase gen types typescript --local > src/lib/database.types.ts"
+    "supabase:types": "npx supabase gen types typescript --local > src/lib/database.types.ts",
+    "purchase:new": "node scripts/new-purchase.js",
+    "purchase:scan": "node scripts/process-receipt.js",
+    "purchase:barcodes": "node scripts/process-barcodes.js",
+    "purchase:prices": "node scripts/build-prices.js"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@huggingface/transformers": "^4.1.0",
     "@mui/icons-material": "^7.3.9",
     "@mui/lab": "^7.0.1-beta.23",
     "@mui/material": "^7.3.9",
@@ -26,18 +31,24 @@
     "react-dom": "^19.2.4",
     "react-router": "^7.14.0",
     "react-router-dom": "^7.14.0",
+    "sharp": "^0.34.5",
+    "swiper": "^12.1.3",
+    "tesseract.js": "^7.0.0",
+    "zbar.wasm": "^2.1.1",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-basic-ssl": "^2.3.0",
     "@vitejs/plugin-react": "^6.0.1",
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
     "supabase": "^2.87.1",
-    "vite": "^8.0.4"
+    "vite": "^8.0.4",
+    "vite-plugin-mkcert": "^1.17.10"
   }
 }

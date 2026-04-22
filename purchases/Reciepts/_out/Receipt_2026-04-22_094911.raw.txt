@@ -1,0 +1,62 @@
+DS dt    a
+:                                Thomas-Mann-StraBe 3
+90513 Zirndorf
+EUR
+Tradit.Schinken                    4,17 A
+0,251 kg x 16,60 EUR/kg
+Banane Tose                        0,98 A
+0,994 kg x 0,99  EUR/kg
+Gurken                             0,69 A
+Trauben dunkel                     2,19 A
+Apfel rot                          1,69 A
+Paprika rot, spitz                 2,39 A
+Cocktailstr.Tomaten                3,49 A
+Mandar inen                         2,99 A
+Heidelbeeren                       3,79 A
+Preisvorteil                       -0,80
+Dr. Oetker Gött.Himb               1,29 A
+Metzgerfr WeiBwurst                3,79 A
+Bockuiirstchen 1.E.                 3,89 A
+Back-~Camembert m.Dip               2,99 A
+XXL Pizzateig                      1,29 A
+Blatterteig                        0,95 A
+Frischkäse Sahne                   1,59 A
+Preisvorteil                       -0,10
+Leberwurst 1.8. fein               1,29 A
+Dr. Oetker Vanille P               2,69 A
+Griech.Joghurt 10%                  2,19 A
+Mozzarella                         0,85 A
+Holland. Gouda jung                3,79 A
+Bacon                 1,99 x 2 3,184
+Preisvorteil                       -0,60
+GO Eg8B H-Milch 3,5% 1,15x 6 6,90 A
+Salami pur Porc                    2,89 A
+Ringsalami                         2,89 A
+Schme1zkaseBauernhof               2,69 A
+Fr.Eier.a. Bodenhal.               2,49 A
+Pere Rigate                      0,69 A
+Bioland Quetsch                    0,85 A
+Bioland Quetsch                    0,85 A
+Apfel-Marac. Getränk 0,69 x 2 1,38 B
+Pfand 0,25 EM         0,25x 2 0,508
+Mia Biog. feinperli               0,42 B
+Pfand 0,25 EM                      0,25 B
+Pombär Original                    1,79 A
+Kuvertüre Zartbitter               1,99 A
+Haribo Mega Roulette 0,75 x 2 1,50 A
+Brot Ciabatta                      0,79 A -
+Laugen Brezel         0,39 x 4 1,564
+PringleSourCre&0nion               2,49 A
+Taschentücherbox      0,95 x 2 1,98
+Rexona Cobalt Dry                  3,658
+Knotenbeute1086                    0,028
+"Pantene Repair&Care                5,95 B
+Biokompost Papierb.                1,49 B
+Lachsfilet mit Haut                5,79 A
+Pfand 0,25                        -0,25 B
+zu zahlen                        102,13
+Kreditkarte                      102,13
+Gesanter Preisvorteil                 1,50
+MWST%X       MWST + Netto = Brutto
+3509 847045/01           18.04.26 16:13
+UST-ID-NR: DE814429027

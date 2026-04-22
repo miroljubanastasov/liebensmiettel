@@ -1,0 +1,109 @@
+{
+  "store_name": "REWE",
+  "store_address": "Albert-Einstein-Str. 25, 90513 Zirndorf",
+  "store_city": "90513 Zirndorf",
+  "purchase_date": "2026-04-18",
+  "purchase_time": "16:39",
+  "total_amount": 30.97,
+  "items": [
+    {
+      "line_text": "PECORINO ROMANO                1,79 B",
+      "ean": null,
+      "name": "PECORINO ROMANO",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.79,
+      "total_price": 1.79
+    },
+    {
+      "line_text": "OFENKAESE                      4,58 B\n7 Stkx 2,29",
+      "ean": null,
+      "name": "OFENKAESE",
+      "quantity": 7,
+      "unit": "pc",
+      "unit_price": 2.29,
+      "total_price": 4.58
+    },
+    {
+      "line_text": "ERDBEERE                     1,99 B",
+      "ean": null,
+      "name": "ERDBEERE",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.99,
+      "total_price": 1.99
+    },
+    {
+      "line_text": "DATTELN                        1,49 B",
+      "ean": null,
+      "name": "DATTELN",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.49,
+      "total_price": 1.49
+    },
+    {
+      "line_text": "PAULA MINI VAN                2,29 B",
+      "ean": null,
+      "name": "PAULA MINI VAN",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.29,
+      "total_price": 2.29
+    },
+    {
+      "line_text": "MUESLISPASS SCHO               7,98 B\n2 Stk x 3,99",
+      "ean": null,
+      "name": "MUESLISPASS SCHO",
+      "quantity": 2,
+      "unit": "pc",
+      "unit_price": 3.99,
+      "total_price": 7.98
+    },
+    {
+      "line_text": "PISTAZTENSCHNITT                3,38 B",
+      "ean": null,
+      "name": "PISTAZTENSCHNITT",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 3.38,
+      "total_price": 3.38
+    },
+    {
+      "line_text": "NUSS NOUGAT CRE.               1,99 B",
+      "ean": null,
+      "name": "NUSS NOUGAT CRE",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.99,
+      "total_price": 1.99
+    },
+    {
+      "line_text": "STUECKSEIFE                    2,99 A",
+      "ean": null,
+      "name": "STUECKSEIFE",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.99,
+      "total_price": 2.99
+    },
+    {
+      "line_text": "FIGURENBALLONS                  2,49 A",
+      "ean": null,
+      "name": "FIGURENBALLONS",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.49,
+      "total_price": 2.49
+    }
+  ],
+  "warnings": [
+    {
+      "code": "PRICE_MATH",
+      "index": 1,
+      "name": "OFENKAESE",
+      "message": "unit_price × quantity (16.03) ≠ total_price (4.58)."
+    }
+  ],
+  "raw_text": "Albert-Einstein-Str. 25\n90513 Zirndorf\nUID Nr. : DE812706034\nEUR\nPECORINO ROMANO                1,79 B\nOFENKAESE                      4,58 B\n7 Stkx 2,29\nERDBEERE                     1,99 B\nDATTELN                        1,49 B\nPAULA MINI VAN                2,29 B\nMUESLISPASS SCHO               7,98 B\n2 Stk x 3,99\nPISTAZTENSCHNITT                3,38 B\n2 Stk x _ 1,69\nNUSS NOUGAT CRE.               1,99 B\nSTUECKSEIFE                    2,99 A\nFIGURENBALLONS                  2,49 A\nSUMME                 EUR     30,97\nGeg. Mastercard      EUR   30,97\n* x  Kundenbeleg * *\nDatum:                                     18.04. 2026\nUhrzeit:                   16:39:34 Uhr\nBeleg-Nr.                         0567\nTrace-Nr.                       160511\nBezahlung\nContactless\nDEBIT MASTERCARD\nNr.              JHEHEHHHHHHE#8315 0000\nW-Nr.                      4556382323\nTerminal-ID                   56053072\nPos-Info                    00 075 00\nAS-Zeit 18. 04.               16:39 Uhr\nAS-Proc-Code = 00 075 00\nCapt. Ref. = 0000\nAPPROVED\nBetrag EUR                       30,97\nZahlung erfolgt\nEa      Approved\nSteuer %       Netto      Steuer      Brutto\nA= 19,0%        4,61       0,87       5,48\nB= 7,0%       23,82       1,67      25,49\nGesantbetrag     28,43       2,54      30,97\nTSE-Signatur:      NdhUSZouUHxskARFKDXUYUYO2u7pZd1PY\nUDHS5E8Ne TeUSXaVXSSUZMaCOBSCSUPEN\nZuyJjuAsJuCahaxy5a0+gtelnkEnuVzuR\ny6Da2EUdBJVSKLIXHTE auabAT4W4\nTSE-Signaturzähler: 301828\nTSE-Transaktion:    148224\nTSE-Start:        2026-04-18716:38:09. 000\nTSE-Stop:        2026-04-18716:39:58. 000\nSeriennnunmer Kasse: REWE:74:56:3c:5c:a4:7d:00\n18. 04. 2026      16:39      Bon-Nr. : 1174\nMarkt: 0747     Kasse:7 Bed. :432107\nNoch kein REWE Bonus-Kunde?\nJetzt in der REWE App anmelden\nund Bonus-Guthaben sammeln!\nREWE Markt GmbH\nSie haben Fragen?\nAntworten gibt es unter www. rewe.de\nBarcode bitte am Ausgang scannen\n2300071776523083\nBONTS\n"
+}

@@ -1,0 +1,62 @@
+Albert-Einstein-Str. 25
+90513 Zirndorf
+UID Nr. : DE812706034
+EUR
+PECORINO ROMANO                1,79 B
+OFENKAESE                      4,58 B
+7 Stkx 2,29
+ERDBEERE                     1,99 B
+DATTELN                        1,49 B
+PAULA MINI VAN                2,29 B
+MUESLISPASS SCHO               7,98 B
+2 Stk x 3,99
+PISTAZTENSCHNITT                3,38 B
+2 Stk x _ 1,69
+NUSS NOUGAT CRE.               1,99 B
+STUECKSEIFE                    2,99 A
+FIGURENBALLONS                  2,49 A
+SUMME                 EUR     30,97
+Geg. Mastercard      EUR   30,97
+* x  Kundenbeleg * *
+Datum:                                     18.04. 2026
+Uhrzeit:                   16:39:34 Uhr
+Beleg-Nr.                         0567
+Trace-Nr.                       160511
+Bezahlung
+Contactless
+DEBIT MASTERCARD
+Nr.              JHEHEHHHHHHE#8315 0000
+W-Nr.                      4556382323
+Terminal-ID                   56053072
+Pos-Info                    00 075 00
+AS-Zeit 18. 04.               16:39 Uhr
+AS-Proc-Code = 00 075 00
+Capt. Ref. = 0000
+APPROVED
+Betrag EUR                       30,97
+Zahlung erfolgt
+Ea      Approved
+Steuer %       Netto      Steuer      Brutto
+A= 19,0%        4,61       0,87       5,48
+B= 7,0%       23,82       1,67      25,49
+Gesantbetrag     28,43       2,54      30,97
+TSE-Signatur:      NdhUSZouUHxskARFKDXUYUYO2u7pZd1PY
+UDHS5E8Ne TeUSXaVXSSUZMaCOBSCSUPEN
+ZuyJjuAsJuCahaxy5a0+gtelnkEnuVzuR
+y6Da2EUdBJVSKLIXHTE auabAT4W4
+TSE-Signaturzähler: 301828
+TSE-Transaktion:    148224
+TSE-Start:        2026-04-18716:38:09. 000
+TSE-Stop:        2026-04-18716:39:58. 000
+Seriennnunmer Kasse: REWE:74:56:3c:5c:a4:7d:00
+18. 04. 2026      16:39      Bon-Nr. : 1174
+Markt: 0747     Kasse:7 Bed. :432107
+Noch kein REWE Bonus-Kunde?
+Jetzt in der REWE App anmelden
+und Bonus-Guthaben sammeln!
+REWE Markt GmbH
+Sie haben Fragen?
+Antworten gibt es unter www. rewe.de
+Barcode bitte am Ausgang scannen
+2300071776523083
+BONTS

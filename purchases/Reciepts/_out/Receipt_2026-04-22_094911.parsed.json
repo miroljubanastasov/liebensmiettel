@@ -1,0 +1,421 @@
+{
+  "store_name": "LIDL",
+  "store_address": "90513 Zirndorf",
+  "store_city": "90513 Zirndorf",
+  "purchase_date": "2026-04-18",
+  "purchase_time": "16:13",
+  "total_amount": 102.13,
+  "items": [
+    {
+      "line_text": "Tradit.Schinken                    4,17 A\n0,251 kg x 16,60 EUR/kg",
+      "ean": null,
+      "name": "Tradit.Schinken",
+      "quantity": 0.251,
+      "unit": "kg",
+      "unit_price": 16.6,
+      "total_price": 4.17
+    },
+    {
+      "line_text": "Banane Tose                        0,98 A\n0,994 kg x 0,99  EUR/kg",
+      "ean": null,
+      "name": "Banane Tose",
+      "quantity": 0.994,
+      "unit": "kg",
+      "unit_price": 0.99,
+      "total_price": 0.98
+    },
+    {
+      "line_text": "Gurken                             0,69 A",
+      "ean": null,
+      "name": "Gurken",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 0.69,
+      "total_price": 0.69
+    },
+    {
+      "line_text": "Trauben dunkel                     2,19 A",
+      "ean": null,
+      "name": "Trauben dunkel",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.19,
+      "total_price": 2.19
+    },
+    {
+      "line_text": "Apfel rot                          1,69 A",
+      "ean": null,
+      "name": "Apfel rot",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.69,
+      "total_price": 1.69
+    },
+    {
+      "line_text": "Paprika rot, spitz                 2,39 A",
+      "ean": null,
+      "name": "Paprika rot, spitz",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.39,
+      "total_price": 2.39
+    },
+    {
+      "line_text": "Cocktailstr.Tomaten                3,49 A",
+      "ean": null,
+      "name": "Cocktailstr.Tomaten",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 3.49,
+      "total_price": 3.49
+    },
+    {
+      "line_text": "Mandar inen                         2,99 A",
+      "ean": null,
+      "name": "Mandar inen",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.99,
+      "total_price": 2.99
+    },
+    {
+      "line_text": "Heidelbeeren                       3,79 A",
+      "ean": null,
+      "name": "Heidelbeeren",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 3.79,
+      "total_price": 3.79
+    },
+    {
+      "line_text": "Dr. Oetker Gött.Himb               1,29 A",
+      "ean": null,
+      "name": "Dr. Oetker Gött.Himb",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.29,
+      "total_price": 1.29
+    },
+    {
+      "line_text": "Metzgerfr WeiBwurst                3,79 A",
+      "ean": null,
+      "name": "Metzgerfr WeiBwurst",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 3.79,
+      "total_price": 3.79
+    },
+    {
+      "line_text": "Bockuiirstchen 1.E.                 3,89 A",
+      "ean": null,
+      "name": "Bockuiirstchen 1.E",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 3.89,
+      "total_price": 3.89
+    },
+    {
+      "line_text": "Back-~Camembert m.Dip               2,99 A",
+      "ean": null,
+      "name": "Back-~Camembert m.Dip",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.99,
+      "total_price": 2.99
+    },
+    {
+      "line_text": "XXL Pizzateig                      1,29 A",
+      "ean": null,
+      "name": "XXL Pizzateig",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.29,
+      "total_price": 1.29
+    },
+    {
+      "line_text": "Blatterteig                        0,95 A",
+      "ean": null,
+      "name": "Blatterteig",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 0.95,
+      "total_price": 0.95
+    },
+    {
+      "line_text": "Frischkäse Sahne                   1,59 A",
+      "ean": null,
+      "name": "Frischkäse Sahne",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.59,
+      "total_price": 1.59
+    },
+    {
+      "line_text": "Leberwurst 1.8. fein               1,29 A",
+      "ean": null,
+      "name": "Leberwurst 1.8. fein",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.29,
+      "total_price": 1.29
+    },
+    {
+      "line_text": "Dr. Oetker Vanille P               2,69 A",
+      "ean": null,
+      "name": "Dr. Oetker Vanille P",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.69,
+      "total_price": 2.69
+    },
+    {
+      "line_text": "Griech.Joghurt 10%                  2,19 A",
+      "ean": null,
+      "name": "Griech.Joghurt 10%",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.19,
+      "total_price": 2.19
+    },
+    {
+      "line_text": "Mozzarella                         0,85 A",
+      "ean": null,
+      "name": "Mozzarella",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 0.85,
+      "total_price": 0.85
+    },
+    {
+      "line_text": "Holland. Gouda jung                3,79 A",
+      "ean": null,
+      "name": "Holland. Gouda jung",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 3.79,
+      "total_price": 3.79
+    },
+    {
+      "line_text": "Bacon                 1,99 x 2 3,184",
+      "ean": null,
+      "name": "Bacon",
+      "quantity": 2,
+      "unit": "pc",
+      "unit_price": 1.99,
+      "total_price": 3.18
+    },
+    {
+      "line_text": "GO Eg8B H-Milch 3,5% 1,15x 6 6,90 A",
+      "ean": null,
+      "name": "GO Eg8B H-Milch 3,5%",
+      "quantity": 6,
+      "unit": "pc",
+      "unit_price": 1.15,
+      "total_price": 6.9
+    },
+    {
+      "line_text": "Salami pur Porc                    2,89 A",
+      "ean": null,
+      "name": "Salami pur Porc",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.89,
+      "total_price": 2.89
+    },
+    {
+      "line_text": "Ringsalami                         2,89 A",
+      "ean": null,
+      "name": "Ringsalami",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.89,
+      "total_price": 2.89
+    },
+    {
+      "line_text": "Schme1zkaseBauernhof               2,69 A",
+      "ean": null,
+      "name": "Schme1zkaseBauernhof",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.69,
+      "total_price": 2.69
+    },
+    {
+      "line_text": "Fr.Eier.a. Bodenhal.               2,49 A",
+      "ean": null,
+      "name": "Fr.Eier.a. Bodenhal",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.49,
+      "total_price": 2.49
+    },
+    {
+      "line_text": "Pere Rigate                      0,69 A",
+      "ean": null,
+      "name": "Pere Rigate",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 0.69,
+      "total_price": 0.69
+    },
+    {
+      "line_text": "Bioland Quetsch                    0,85 A",
+      "ean": null,
+      "name": "Bioland Quetsch",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 0.85,
+      "total_price": 0.85
+    },
+    {
+      "line_text": "Bioland Quetsch                    0,85 A",
+      "ean": null,
+      "name": "Bioland Quetsch",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 0.85,
+      "total_price": 0.85
+    },
+    {
+      "line_text": "Apfel-Marac. Getränk 0,69 x 2 1,38 B",
+      "ean": null,
+      "name": "Apfel-Marac. Getränk",
+      "quantity": 2,
+      "unit": "pc",
+      "unit_price": 0.69,
+      "total_price": 1.38
+    },
+    {
+      "line_text": "Mia Biog. feinperli               0,42 B",
+      "ean": null,
+      "name": "Mia Biog. feinperli",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 0.42,
+      "total_price": 0.42
+    },
+    {
+      "line_text": "Pombär Original                    1,79 A",
+      "ean": null,
+      "name": "Pombär Original",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.79,
+      "total_price": 1.79
+    },
+    {
+      "line_text": "Kuvertüre Zartbitter               1,99 A",
+      "ean": null,
+      "name": "Kuvertüre Zartbitter",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.99,
+      "total_price": 1.99
+    },
+    {
+      "line_text": "Haribo Mega Roulette 0,75 x 2 1,50 A",
+      "ean": null,
+      "name": "Haribo Mega Roulette",
+      "quantity": 2,
+      "unit": "pc",
+      "unit_price": 0.75,
+      "total_price": 1.5
+    },
+    {
+      "line_text": "Brot Ciabatta                      0,79 A -",
+      "ean": null,
+      "name": "Brot Ciabatta",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 0.79,
+      "total_price": 0.79
+    },
+    {
+      "line_text": "Laugen Brezel         0,39 x 4 1,564",
+      "ean": null,
+      "name": "Laugen Brezel",
+      "quantity": 4,
+      "unit": "pc",
+      "unit_price": 0.39,
+      "total_price": 1.56
+    },
+    {
+      "line_text": "PringleSourCre&0nion               2,49 A",
+      "ean": null,
+      "name": "PringleSourCre&0nion",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.49,
+      "total_price": 2.49
+    },
+    {
+      "line_text": "Taschentücherbox      0,95 x 2 1,98",
+      "ean": null,
+      "name": "Taschentücherbox",
+      "quantity": 2,
+      "unit": "pc",
+      "unit_price": 0.95,
+      "total_price": 1.98
+    },
+    {
+      "line_text": "Rexona Cobalt Dry                  3,658",
+      "ean": null,
+      "name": "Rexona Cobalt Dry",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 3.65,
+      "total_price": 3.65
+    },
+    {
+      "line_text": "Knotenbeute1086                    0,028",
+      "ean": null,
+      "name": "Knotenbeute1086",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 0.02,
+      "total_price": 0.02
+    },
+    {
+      "line_text": "\"Pantene Repair&Care                5,95 B",
+      "ean": null,
+      "name": "\"Pantene Repair&Care",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 5.95,
+      "total_price": 5.95
+    },
+    {
+      "line_text": "Biokompost Papierb.                1,49 B",
+      "ean": null,
+      "name": "Biokompost Papierb",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.49,
+      "total_price": 1.49
+    },
+    {
+      "line_text": "Lachsfilet mit Haut                5,79 A",
+      "ean": null,
+      "name": "Lachsfilet mit Haut",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 5.79,
+      "total_price": 5.79
+    }
+  ],
+  "warnings": [
+    {
+      "code": "PRICE_MATH",
+      "index": 21,
+      "name": "Bacon",
+      "message": "unit_price × quantity (3.98) ≠ total_price (3.18)."
+    },
+    {
+      "code": "PRICE_MATH",
+      "index": 38,
+      "name": "Taschentücherbox",
+      "message": "unit_price × quantity (1.90) ≠ total_price (1.98)."
+    }
+  ],
+  "raw_text": "DS dt    a\n:                                Thomas-Mann-StraBe 3\n90513 Zirndorf\nEUR\nTradit.Schinken                    4,17 A\n0,251 kg x 16,60 EUR/kg\nBanane Tose                        0,98 A\n0,994 kg x 0,99  EUR/kg\nGurken                             0,69 A\nTrauben dunkel                     2,19 A\nApfel rot                          1,69 A\nPaprika rot, spitz                 2,39 A\nCocktailstr.Tomaten                3,49 A\nMandar inen                         2,99 A\nHeidelbeeren                       3,79 A\nPreisvorteil                       -0,80\nDr. Oetker Gött.Himb               1,29 A\nMetzgerfr WeiBwurst                3,79 A\nBockuiirstchen 1.E.                 3,89 A\nBack-~Camembert m.Dip               2,99 A\nXXL Pizzateig                      1,29 A\nBlatterteig                        0,95 A\nFrischkäse Sahne                   1,59 A\nPreisvorteil                       -0,10\nLeberwurst 1.8. fein               1,29 A\nDr. Oetker Vanille P               2,69 A\nGriech.Joghurt 10%                  2,19 A\nMozzarella                         0,85 A\nHolland. Gouda jung                3,79 A\nBacon                 1,99 x 2 3,184\nPreisvorteil                       -0,60\nGO Eg8B H-Milch 3,5% 1,15x 6 6,90 A\nSalami pur Porc                    2,89 A\nRingsalami                         2,89 A\nSchme1zkaseBauernhof               2,69 A\nFr.Eier.a. Bodenhal.               2,49 A\nPere Rigate                      0,69 A\nBioland Quetsch                    0,85 A\nBioland Quetsch                    0,85 A\nApfel-Marac. Getränk 0,69 x 2 1,38 B\nPfand 0,25 EM         0,25x 2 0,508\nMia Biog. feinperli               0,42 B\nPfand 0,25 EM                      0,25 B\nPombär Original                    1,79 A\nKuvertüre Zartbitter               1,99 A\nHaribo Mega Roulette 0,75 x 2 1,50 A\nBrot Ciabatta                      0,79 A -\nLaugen Brezel         0,39 x 4 1,564\nPringleSourCre&0nion               2,49 A\nTaschentücherbox      0,95 x 2 1,98\nRexona Cobalt Dry                  3,658\nKnotenbeute1086                    0,028\n\"Pantene Repair&Care                5,95 B\nBiokompost Papierb.                1,49 B\nLachsfilet mit Haut                5,79 A\nPfand 0,25                        -0,25 B\nzu zahlen                        102,13\nKreditkarte                      102,13\nGesanter Preisvorteil                 1,50\nMWST%X       MWST + Netto = Brutto\n3509 847045/01           18.04.26 16:13\nUST-ID-NR: DE814429027\n"
+}

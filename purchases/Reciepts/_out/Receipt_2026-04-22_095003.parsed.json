@@ -1,0 +1,57 @@
+{
+  "store_name": "ROSSMANN",
+  "store_address": null,
+  "store_city": null,
+  "purchase_date": "2026-04-20",
+  "purchase_time": "13:26",
+  "total_amount": 14.07,
+  "items": [
+    {
+      "line_text": "\"4305615839509 GP MUSS HDX HONIG- 2,208",
+      "ean": "4305615839509",
+      "name": "MUSS HDX HONIG",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.2,
+      "total_price": 2.2
+    },
+    {
+      "line_text": "4068134078193 GP TROCKENF HANGO-             6,29 5",
+      "ean": "4068134078193",
+      "name": "TROCKENF HANGO",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 6.29,
+      "total_price": 6.29
+    },
+    {
+      "line_text": "4068134184009 ISANA HEN DG HIAMI             0,55 A",
+      "ean": "4068134184009",
+      "name": "ISANA HEN DG HIAMI",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 0.55,
+      "total_price": 0.55
+    },
+    {
+      "line_text": "4305615822624 ENERBIO PROT.RIE U             0,33 B",
+      "ean": "4305615822624",
+      "name": "ENERBIO PROT.RIE U",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 0.33,
+      "total_price": 0.33
+    },
+    {
+      "line_text": "4103040051875 SEBAMED HASCHEHULS             3,95 A",
+      "ean": "4103040051875",
+      "name": "SEBAMED HASCHEHULS",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 3.95,
+      "total_price": 3.95
+    }
+  ],
+  "warnings": [],
+  "raw_text": "Mein Drogeriemarkt:\n\"4305615839509 GP MUSS HDX HONIG- 2,208\n4068134078193 GP TROCKENF HANGO-            €6,29 5\n4068134184009 ISANA HEN DG HIAMI            €0,55 A\n4305615822624 ENERBIO PROT.RIE U            €0,33 B\n4103040051875 SEBAMED HASCHEHULS            €3,95 A\nSumme          214,07\nMUST Gruppe       Netto        MUST       Brutto\nB 7%:           €8,94        €0,63        €9,57\nA 198:         €3,78       €0,72       €4,50\nTotal          €12,72         €1,35        €14,07\nsev           6,0\nSteuerreferenz;\nSignaturzahler: 520687\nSignatur:       FZ8K3u0dTyZHXpLNJAY0g65RUGEF DT JSNksSd/U\nxBuBgSrVCTOr Ro 3QEO/9dJShZE tadd JG +xX3y\nQ191ur1Syy+QTUAgN03GekbZpxinlI0StRTua7z1\nUSYZEUFHOBF\nStart:           2026-04-20713:26:37402:00\nEnde:            2026-04-20713:26:37402:00\nrT       i\nI\ni           il    i\nES Th                                       :\nUKST-2693 - Dirk Rossmann GmbH\n90513 Zirndorf / Nürnberger Str, 29 a\nÖffnungszeiten:\nwu, rossnann,de/filialfinder\n:      UHTAUSCH NUR HIT KASSENBON\nRückzahlung NUR auf veruendetes Kartenkonta\n20.04.26, 13:26 / 2693 / 03 / 902 / 169337641 / 3.21\n        K-U-N-D-E-N-B-E-L-E-G\nDirk Rossmann 2693\nKartenzahlung\nkontakt los\nSEPA Lastschrift Online\nBetrag                           14,07 EUR\n20.04.2026       13:26       T-ID 60764538\nIx, 042792               Beleg-Nr. 1086\nUl\nKurz-BLZ #####            Konto #0840\nK.folg.Nr                               00\nIBAN                DEGB7GHEH#E#RERIII0B40\nM-ID                G030446 7558225 12170815\nAutor .merkmal                       WEEONV\nki           Karte akzeptiert           *k\nDie Belastung erfolgt zum nächstmöglichen\nBankarbeitstag.\nWeitere Informationen zu SEPA-Lastschrift:\nhttps: {/ ui .payone  con/\nSEPA-Lastschrift\nBitte Beleg aufbewahren.\n"
+}

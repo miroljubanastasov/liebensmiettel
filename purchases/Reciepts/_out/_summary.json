@@ -1,0 +1,47 @@
+[
+  {
+    "file": "Receipt_2026-04-11_210112.jpg",
+    "store": "LIDL",
+    "date": "2026-04-11",
+    "time": "19:32",
+    "total": 89.74,
+    "items": 38,
+    "items_sum": 89.78
+  },
+  {
+    "file": "Receipt_2026-04-22_094823.jpg",
+    "store": "REWE",
+    "date": "2026-04-20",
+    "time": "13:31",
+    "total": 13.46,
+    "items": 3,
+    "items_sum": 13.46
+  },
+  {
+    "file": "Receipt_2026-04-22_094911.jpg",
+    "store": "LIDL",
+    "date": "2026-04-18",
+    "time": "16:13",
+    "total": 102.13,
+    "items": 44,
+    "items_sum": 103.21
+  },
+  {
+    "file": "Receipt_2026-04-22_095003.jpg",
+    "store": "ROSSMANN",
+    "date": "2026-04-20",
+    "time": "13:26",
+    "total": 14.07,
+    "items": 5,
+    "items_sum": 13.32
+  },
+  {
+    "file": "Receipt_2026-04-22_095050.jpg",
+    "store": "REWE",
+    "date": "2026-04-18",
+    "time": "16:39",
+    "total": 30.97,
+    "items": 10,
+    "items_sum": 30.97
+  }
+]

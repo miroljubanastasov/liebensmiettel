@@ -1,0 +1,39 @@
+{
+  "store_name": "REWE",
+  "store_address": "Nürnberger Str. 29a, 90513 Zirndorf",
+  "store_city": "90513 Zirndorf",
+  "purchase_date": "2026-04-20",
+  "purchase_time": "13:31",
+  "total_amount": 13.46,
+  "items": [
+    {
+      "line_text": "HAEHN. SCHENKEL                 7,78 B\nHandeingabe E-Bon 0,560 kg",
+      "ean": null,
+      "name": "HAEHN. SCHENKEL",
+      "quantity": 0.56,
+      "unit": "kg",
+      "unit_price": 13.89,
+      "total_price": 7.78
+    },
+    {
+      "line_text": "MINT MAGDALENAS              2,99 B",
+      "ean": null,
+      "name": "MINT MAGDALENAS",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.99,
+      "total_price": 2.99
+    },
+    {
+      "line_text": "BUTTERSPR. GEB.             2,698",
+      "ean": null,
+      "name": "BUTTERSPR. GEB",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.69,
+      "total_price": 2.69
+    }
+  ],
+  "warnings": [],
+  "raw_text": "NE          N\nREWE Markt\nNürnberger Str. 29a                                   )\n.                   90513 Zirndorf\nUID Nr. : DE812706034    ER\nHAEHN. SCHENKEL                 7,78 B\nHandeingabe E-Bon 0,560 kg\nMINT MAGDALENAS              2,99 B\nBUTTERSPR. GEB.             2,698\nswe ER 1346\nGeg. EC-Cash        EUR   13,46\n* % Kundenbeleg * *\nDatum:                                    20. 04. 2026\nUhrzeit:                 13:31:37 Uhr\nBeleg-Nr.                        0791\nTrace-Nr.             a        053368\nKartenzahlüng\nContactless\ngirocard\nNr.                  JHHHMHHEHHEEHHH8401 0000\nTerminal-ID                  56058294\nPos-Info                    00 075 00\nAS-Zeit 20. 04.              13:31 Uhr\nBetrag EUR                       13,46\nZahlung erfolgt\nSteuer %    Netto    Steuer    Brutto\nB= 7,0%      12,58       0,88      13,46\nGesantbeträg     12,58       0,88      13,46\nTSE“Signatur:     $FOVHUSRi 7 TQaUUCihYZAOStHFULHOX\n/NUr 1GetKNHU247Us 5c00KV3T ial BZYhy\npuB/n5FE3a7heTaKHZ0Szund 1 21hnpUEd\nH2rgao9VleUpktpagFu1 jymöhTQIOh\nTSE-Signaturzähler: 132382\nTSE-Transaktion:   63438                                                     ?\nTSE-Start:       2026-04-20713:32:02.000\nTSE-Stop:        2026-04-20713:32:32.000\nSer iennnunner Kasse: REWE:30:56:0f:65:b3:69:00\n20.04. 2026        13:32        Bon-Nr. :5260\n= Markt: 0643    Kasse:3 Bed. :432103\nKEKEKREERRRRAK RA KEREERKR KKK RRRRERKARHORRK\nNoch kein REWE Bonus—Kunde?\nJetzt in der REWE App anmelden\nund Bonus-Guthaben sammeln!\nKRRRREKERRERRRRKRERIAORKKRARKAKR AK KAA RK\nREWE Markt GmbH\nSie haben Fragen?\nAntworten gibt es unter www. rewe.de\nBarcode bitte am Ausgang scannen\n2300031776684716\nBONTS\n"
+}

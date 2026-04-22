@@ -1,0 +1,354 @@
+{
+  "store_name": "LIDL",
+  "store_address": "90513 Zirndorf",
+  "store_city": "90513 Zirndorf",
+  "purchase_date": "2026-04-11",
+  "purchase_time": "19:32",
+  "total_amount": 89.74,
+  "items": [
+    {
+      "line_text": "Banane Fair Bio                    0,86 A\n0.432 kg x 1,99 EUR/kg",
+      "ean": null,
+      "name": "Banane Fair Bio",
+      "quantity": 0.432,
+      "unit": "kg",
+      "unit_price": 1.99,
+      "total_price": 0.86
+    },
+    {
+      "line_text": "Bio Kiwi                           2,79 4",
+      "ean": null,
+      "name": "Bio Kiwi",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.79,
+      "total_price": 2.79
+    },
+    {
+      "line_text": "Tomaten gestr, Prem,               2,99 A",
+      "ean": null,
+      "name": "Tomaten gestr, Prem",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.99,
+      "total_price": 2.99
+    },
+    {
+      "line_text": "Apfel rot                      1,69 A",
+      "ean": null,
+      "name": "Apfel rot",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.69,
+      "total_price": 1.69
+    },
+    {
+      "line_text": "Cocktailstr. Tomaten                3,69 A",
+      "ean": null,
+      "name": "Cocktailstr. Tomaten",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 3.69,
+      "total_price": 3.69
+    },
+    {
+      "line_text": "Gurken                             0,66 A",
+      "ean": null,
+      "name": "Gurken",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 0.66,
+      "total_price": 0.66
+    },
+    {
+      "line_text": "Mandar inen                         2,99 A",
+      "ean": null,
+      "name": "Mandar inen",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.99,
+      "total_price": 2.99
+    },
+    {
+      "line_text": "Birnen                             1,79 A",
+      "ean": null,
+      "name": "Birnen",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.79,
+      "total_price": 1.79
+    },
+    {
+      "line_text": "Knusper Gockelchen                 3,29 A",
+      "ean": null,
+      "name": "Knusper Gockelchen",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 3.29,
+      "total_price": 3.29
+    },
+    {
+      "line_text": "Laugenstange                       1,99 A",
+      "ean": null,
+      "name": "Laugenstange",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.99,
+      "total_price": 1.99
+    },
+    {
+      "line_text": "MSC_Fischstäbchen                  2,49 A",
+      "ean": null,
+      "name": "MSC_Fischstäbchen",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.49,
+      "total_price": 2.49
+    },
+    {
+      "line_text": "Frischkäse Sahne                   1,59 A",
+      "ean": null,
+      "name": "Frischkäse Sahne",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.59,
+      "total_price": 1.59
+    },
+    {
+      "line_text": "Blätterteig.                       0,95 A",
+      "ean": null,
+      "name": "Blätterteig",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 0.95,
+      "total_price": 0.95
+    },
+    {
+      "line_text": "XXL Pizzateig                      1,29 A",
+      "ean": null,
+      "name": "XXL Pizzateig",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.29,
+      "total_price": 1.29
+    },
+    {
+      "line_text": "EgSB Dt. Markenbutt.               1,69 A",
+      "ean": null,
+      "name": "EgSB Dt. Markenbutt",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.69,
+      "total_price": 1.69
+    },
+    {
+      "line_text": "Delik. Kochschinken                2,89 A",
+      "ean": null,
+      "name": "Delik. Kochschinken",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.89,
+      "total_price": 2.89
+    },
+    {
+      "line_text": "Mozzarella gerieben                1,79 A",
+      "ean": null,
+      "name": "Mozzarella gerieben",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.79,
+      "total_price": 1.79
+    },
+    {
+      "line_text": "Dr. Oetker Vanille p               2,69 4",
+      "ean": null,
+      "name": "Dr. Oetker Vanille p",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.69,
+      "total_price": 2.69
+    },
+    {
+      "line_text": "Bockwürstchen i.E.                 3,89 A",
+      "ean": null,
+      "name": "Bockwürstchen i.E",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 3.89,
+      "total_price": 3.89
+    },
+    {
+      "line_text": "Mozzarella Rolle                   1,29 A",
+      "ean": null,
+      "name": "Mozzarella Rolle",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.29,
+      "total_price": 1.29
+    },
+    {
+      "line_text": "Bacon Scheiben                1,29 A",
+      "ean": null,
+      "name": "Bacon Scheiben",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.29,
+      "total_price": 1.29
+    },
+    {
+      "line_text": "Leberwurst i.B. fein               1,29 A",
+      "ean": null,
+      "name": "Leberwurst i.B. fein",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.29,
+      "total_price": 1.29
+    },
+    {
+      "line_text": "Gouda Scheiben 48%                 2,49 A",
+      "ean": null,
+      "name": "Gouda Scheiben 48%",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.49,
+      "total_price": 2.49
+    },
+    {
+      "line_text": "Holland. Gouda jung            3,794",
+      "ean": null,
+      "name": "Holland. Gouda jung",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 3.79,
+      "total_price": 3.79
+    },
+    {
+      "line_text": "Rapsöl 11             1,59x 2 3,184",
+      "ean": null,
+      "name": "Rapsöl 11",
+      "quantity": 2,
+      "unit": "pc",
+      "unit_price": 1.59,
+      "total_price": 3.18
+    },
+    {
+      "line_text": "Tomate Frito          0,79x 2 1,584",
+      "ean": null,
+      "name": "Tomate Frito",
+      "quantity": 2,
+      "unit": "pc",
+      "unit_price": 0.79,
+      "total_price": 1.58
+    },
+    {
+      "line_text": "Hühnerbrühwürfel                   0,59 A",
+      "ean": null,
+      "name": "Hühnerbrühwürfel",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 0.59,
+      "total_price": 0.59
+    },
+    {
+      "line_text": "Klare Fleischsuppe                 0,59 A",
+      "ean": null,
+      "name": "Klare Fleischsuppe",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 0.59,
+      "total_price": 0.59
+    },
+    {
+      "line_text": "Eier 10er Freilandh.               2,99 4",
+      "ean": null,
+      "name": "Eier 10er Freilandh",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.99,
+      "total_price": 2.99
+    },
+    {
+      "line_text": "Penne Rigate                       0,69 A",
+      "ean": null,
+      "name": "Penne Rigate",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 0.69,
+      "total_price": 0.69
+    },
+    {
+      "line_text": "Spaghetti                     0,69 A",
+      "ean": null,
+      "name": "Spaghetti",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 0.69,
+      "total_price": 0.69
+    },
+    {
+      "line_text": "Thunfisch in 61                 4,99 A",
+      "ean": null,
+      "name": "Thunfisch in 61",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 4.99,
+      "total_price": 4.99
+    },
+    {
+      "line_text": "PringleSourCreglnicn               2,49 A",
+      "ean": null,
+      "name": "PringleSourCreglnicn",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 2.49,
+      "total_price": 2.49
+    },
+    {
+      "line_text": "Butterwaffeln Karame               3,49 A",
+      "ean": null,
+      "name": "Butterwaffeln Karame",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 3.49,
+      "total_price": 3.49
+    },
+    {
+      "line_text": "Red Band Schnuller                 1,99 A",
+      "ean": null,
+      "name": "Red Band Schnuller",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 1.99,
+      "total_price": 1.99
+    },
+    {
+      "line_text": "Erdnussf1ips                       0,99 4",
+      "ean": null,
+      "name": "Erdnussf1ips",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 0.99,
+      "total_price": 0.99
+    },
+    {
+      "line_text": "Brot Fladen So.       0.89% 2 1,784",
+      "ean": null,
+      "name": "Brot Fladen So",
+      "quantity": 2,
+      "unit": "pc",
+      "unit_price": 0.89,
+      "total_price": 1.78
+    },
+    {
+      "line_text": "Lachstilet wit Haut 5,79 X_2 11,58 4",
+      "ean": null,
+      "name": "Lachstilet wit Haut 5,79 X_2",
+      "quantity": 1,
+      "unit": "pc",
+      "unit_price": 11.58,
+      "total_price": 11.58
+    }
+  ],
+  "warnings": [],
+  "raw_text": "»\nLDN.\nThomas-Hann-StraBe 3\n90513 Zirndorf\n.                     EUR\nBanane Fair Bio                    0,86 A\n0.432 kg x 1,99 EUR/kg\nBio Kiwi                           2,79 4\nTomaten gestr, Prem,               2,99 A\nApfel rot                      1,69 A\nCocktailstr. Tomaten                3,69 A\nGurken                             0,66 A\nMandar inen                         2,99 A\nBirnen                             1,79 A\nKnusper Gockelchen                 3,29 A\nLaugenstange                       1,99 A\nMSC_Fischstäbchen                  2,49 A\nFrischkäse Sahne                   1,59 A\nBlätterteig.                       0,95 A\nXXL Pizzateig                      1,29 A\nEgSB Dt. Markenbutt.               1,69 A\nDelik. Kochschinken                2,89 A\nMozzarella gerieben                1,79 A\nDr. Oetker Vanille p               2,69 4\nBockwürstchen i.E.                 3,89 A\nMozzarella Rolle                   1,29 A\nBacon Scheiben                1,29 A\nLeberwurst i.B. fein               1,29 A\nGouda Scheiben 48%                 2,49 A\nPreisvorteil =                   -0,04\nHolland. Gouda jung            3,794\nRapsöl 11             1,59x 2 3,184\nTomate Frito          0,79x 2 1,584\nHühnerbrühwürfel                   0,59 A\nKlare Fleischsuppe                 0,59 A\nEier 10er Freilandh.               2,99 4\nPenne Rigate                       0,69 A\nSpaghetti                     0,69 A\nThunfisch in 61                 4,99 A\nPringleSourCreglnicn               2,49 A\nButterwaffeln Karame               3,49 A\nRed Band Schnuller                 1,99 A\nErdnussf1ips                       0,99 4\nBrot Fladen So.       0.89% 2 1,784\nLachstilet wit Haut 5,79 X_2 11,58 4\n2u zahlen                         09,74\nBar                              100,00\nRiickge 1d                         -10,26\nGesamter Preisvorteil                 0,04\nMWST%       MWST + Netto = Brutto\nA 7%       5.87      03,87      89,74\nSumme        5,87      83,87      89,74\nı Lade dir die Lidl Flus-App herunter  |                                                    :\nwud spare bei deinen nächsten Einkauf, |\nMO\n—        1         |         |\n[SE Transakt ionsnummer : |    |\nSeriennr. Kasse: LDL -000-3509-3\nSeriennr. TSE: PV3W25Ld3WPj+BfDeHguOKyirBg\nNUEU/pngmYGx 13zk=\nPrüfwert: ALUNEC 1gsHiEABZXK TVW] 2ZB56P0F sr\nEDrenkAZcSJD7wIh7JmFOyB1ZT TugldB TBa8yOnSBB\n9C098 10 1KZIC9FTZDEMX/919E1B/afQuo/+U1VdzbN\nBLBwsqze vile\nSignaturzahler: 220140\n2026-04-11717:32: 16.0002\n2026-04-11117:33:22.000Z\n3509 821550/03          11.04.26 19:32\nUST-TD-NR: DEB14425(27\n"
+}
