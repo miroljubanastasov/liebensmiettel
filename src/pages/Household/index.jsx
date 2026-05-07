@@ -4,7 +4,7 @@ import {
     Card, CardContent, Avatar, Chip, CircularProgress,
     Dialog, DialogTitle, DialogContent, DialogActions,
     List, ListItem, ListItemAvatar, ListItemText, ListItemSecondaryAction,
-    Divider,
+    Divider, Alert,
 } from '@mui/material'
 import SkeletonList from '../../components/layout/SkeletonList'
 import HomeIcon from '@mui/icons-material/Home'
@@ -64,6 +64,8 @@ export default function Household() {
     // Last created invite link (for copy)
     const [lastInviteLink, setLastInviteLink] = useState(null)
     const [linkCopied, setLinkCopied] = useState(false)
+    const [inviteError, setInviteError] = useState(null)
+    const [inviteWorking, setInviteWorking] = useState(false)
 
     const isCreator = household?.created_by === user?.id
 
@@ -160,38 +162,62 @@ export default function Household() {
         loadData()
     }
 
+    // RFC4122 v4 UUID — fallback for browsers without crypto.randomUUID
+    const generateUuid = () => {
+        if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+            try { return crypto.randomUUID() } catch { /* fall through */ }
+        }
+        if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+            const bytes = new Uint8Array(16)
+            crypto.getRandomValues(bytes)
+            bytes[6] = (bytes[6] & 0x0f) | 0x40
+            bytes[8] = (bytes[8] & 0x3f) | 0x80
+            const h = Array.from(bytes, (b) => b.toString(16).padStart(2, '0'))
+            return `${h.slice(0, 4).join('')}-${h.slice(4, 6).join('')}-${h.slice(6, 8).join('')}-${h.slice(8, 10).join('')}-${h.slice(10, 16).join('')}`
+        }
+        // Last-resort (non-crypto)
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+            const r = Math.random() * 16 | 0
+            const v = c === 'x' ? r : (r & 0x3 | 0x8)
+            return v.toString(16)
+        })
+    }
+
     // Send invite — email is optional. Returns a shareable link via the
     // generated token.
     const handleInvite = async () => {
         if (!profile?.household_id) return
-        const email = inviteEmail.trim().toLowerCase() || null
-        const token = (typeof crypto !== 'undefined' && crypto.randomUUID)
-            ? crypto.randomUUID()
-            : null
-        const payload = {
-            household_id: profile.household_id,
-            email,
-            invited_by: user.id,
-        }
-        if (token) payload.token = token
-        const { error } = await supabase
-            .from('household_invites')
-            .insert(payload)
-        if (error) {
-            console.error('Failed to create invite', error)
-            setInviteOpen(false)
-            setInviteEmail('')
-            return
-        }
-        if (token) {
+        setInviteError(null)
+        setInviteWorking(true)
+        try {
+            const email = inviteEmail.trim().toLowerCase() || null
+            const token = generateUuid()
+            const { error } = await supabase
+                .from('household_invites')
+                .insert({
+                    household_id: profile.household_id,
+                    email,
+                    invited_by: user.id,
+                    token,
+                })
+            if (error) {
+                console.error('Failed to create invite', error)
+                setInviteError(error.message || 'Could not create invite.')
+                return
+            }
             const url = `${window.location.origin}${import.meta.env.BASE_URL}invite/${token}`
                 .replace(/([^:])\/\//g, '$1/')
             setLastInviteLink(url)
             setLinkCopied(false)
+            setInviteOpen(false)
+            setInviteEmail('')
+            loadData()
+        } catch (e) {
+            console.error(e)
+            setInviteError(e?.message || 'Unexpected error.')
+        } finally {
+            setInviteWorking(false)
         }
-        setInviteOpen(false)
-        setInviteEmail('')
-        loadData()
     }
 
     // Build a share URL for an existing invite row
@@ -577,7 +603,7 @@ export default function Household() {
             {/* ── Invite Dialog ── */}
             <Dialog
                 open={inviteOpen}
-                onClose={() => setInviteOpen(false)}
+                onClose={() => { if (!inviteWorking) { setInviteOpen(false); setInviteError(null) } }}
                 fullWidth maxWidth="xs"
                 sx={{ zIndex: 2200 }}
                 PaperProps={{ sx: { borderRadius: '8px' } }}
@@ -589,6 +615,9 @@ export default function Household() {
                         invitee's email so they'll see the invite in-app once
                         they sign in with that address.
                     </Typography>
+                    {inviteError && (
+                        <Alert severity="error" sx={{ mt: 1, mb: 1 }}>{inviteError}</Alert>
+                    )}
                     <TextField
                         autoFocus fullWidth
                         label="Email (optional)"
@@ -600,8 +629,10 @@ export default function Household() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setInviteOpen(false)} sx={{ color: 'text.secondary' }}>Cancel</Button>
-                    <Button onClick={handleInvite} variant="contained">Create Link</Button>
+                    <Button onClick={() => { setInviteOpen(false); setInviteError(null) }} disabled={inviteWorking} sx={{ color: 'text.secondary' }}>Cancel</Button>
+                    <Button onClick={handleInvite} disabled={inviteWorking} variant="contained">
+                        {inviteWorking ? <CircularProgress size={20} /> : 'Create Link'}
+                    </Button>
                 </DialogActions>
             </Dialog>
 
