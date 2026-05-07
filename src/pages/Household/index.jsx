@@ -165,24 +165,30 @@ export default function Household() {
     const handleInvite = async () => {
         if (!profile?.household_id) return
         const email = inviteEmail.trim().toLowerCase() || null
-        const { data, error } = await supabase
+        const token = (typeof crypto !== 'undefined' && crypto.randomUUID)
+            ? crypto.randomUUID()
+            : null
+        const payload = {
+            household_id: profile.household_id,
+            email,
+            invited_by: user.id,
+        }
+        if (token) payload.token = token
+        const { error } = await supabase
             .from('household_invites')
-            .insert({
-                household_id: profile.household_id,
-                email,
-                invited_by: user.id,
-            })
-            .select('token')
-            .single()
-        if (error || !data?.token) {
+            .insert(payload)
+        if (error) {
+            console.error('Failed to create invite', error)
             setInviteOpen(false)
             setInviteEmail('')
             return
         }
-        const url = `${window.location.origin}${import.meta.env.BASE_URL}invite/${data.token}`
-            .replace(/([^:])\/\//g, '$1/')
-        setLastInviteLink(url)
-        setLinkCopied(false)
+        if (token) {
+            const url = `${window.location.origin}${import.meta.env.BASE_URL}invite/${token}`
+                .replace(/([^:])\/\//g, '$1/')
+            setLastInviteLink(url)
+            setLinkCopied(false)
+        }
         setInviteOpen(false)
         setInviteEmail('')
         loadData()
