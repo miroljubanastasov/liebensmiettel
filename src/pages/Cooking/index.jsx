@@ -13,6 +13,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import TopBar from '../../components/layout/TopBar'
+import { SkeletonCardList } from '../../components/layout/SkeletonList'
 import {
     findByIngredients, searchRecipes, getRandomRecipe,
     getRecipeInfo, recipeImageUrl, ingredientImageUrl,
@@ -157,9 +158,7 @@ export default function Cooking() {
 
                 {/* Loading */}
                 {loading && (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
-                        <CircularProgress />
-                    </Box>
+                    <SkeletonCardList rows={4} />
                 )}
 
                 {/* Recipe list */}

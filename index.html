@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/logo.PNG" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ff6b6b" />
     <title>Liebensmittel</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -11,6 +12,21 @@
       href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&display=swap"
       rel="stylesheet"
     />
+    <script>
+      // GitHub Pages SPA redirect: decode the ?/path&query left by 404.html
+      // back into a real URL via history.replaceState.
+      (function () {
+        var l = window.location;
+        if (l.search.startsWith('?/')) {
+          var decoded = l.search.slice(2).split('&').map(function (s) {
+            return s.replace(/~and~/g, '&');
+          });
+          var path = decoded.shift();
+          var query = decoded.length ? '?' + decoded.join('&') : '';
+          window.history.replaceState(null, '', l.pathname.replace(/\/$/, '') + '/' + path + query + l.hash);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
-import { ThemeProvider, CssBaseline, Box, BottomNavigation, BottomNavigationAction, Paper, CircularProgress } from '@mui/material'
+import { ThemeProvider, CssBaseline, Box, BottomNavigation, BottomNavigationAction, Paper, Skeleton } from '@mui/material'
 import KitchenIcon from '@mui/icons-material/Kitchen'
 import ListAltIcon from '@mui/icons-material/ListAlt'
 import RamenDiningIcon from '@mui/icons-material/RamenDining'
@@ -17,6 +17,7 @@ import Cooking from './pages/Cooking'
 import Nutrition from './pages/Nutrition'
 import Budget from './pages/Budget'
 import Household from './pages/Household'
+import SkeletonList from './components/layout/SkeletonList'
 
 const NAV_ROUTES = [
   { path: '/', label: 'Pantry', icon: <KitchenIcon /> },
@@ -67,8 +68,42 @@ export default function App() {
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-          <CircularProgress />
+        <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', pb: 7 }}>
+          {/* Top bar skeleton */}
+          <Box
+            sx={{
+              position: 'fixed', top: 0, left: 0, right: 0, zIndex: 2000,
+              height: 80, bgcolor: 'background.default',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              px: 2, borderBottom: '1px solid', borderColor: 'divider',
+            }}
+          >
+            <Skeleton variant="circular" width={56} height={56} animation="wave" />
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
+              <Skeleton variant="text" width={120} height={18} animation="wave" />
+              <Skeleton variant="text" width={80} height={10} animation="wave" />
+            </Box>
+            <Skeleton variant="circular" width={24} height={24} animation="wave" />
+          </Box>
+          {/* Category chips skeleton */}
+          <Box sx={{ pt: '88px', px: 2, display: 'flex', gap: 0.75, overflow: 'hidden' }}>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} variant="rounded" width={64} height={28} animation="wave" />
+            ))}
+          </Box>
+          {/* Content rows skeleton */}
+          <Box sx={{ px: 2, pt: 2 }}>
+            <SkeletonList rows={6} avatarSize={32} />
+          </Box>
+          {/* Bottom nav skeleton */}
+          <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1200, bgcolor: 'secondary.main', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-around' }} elevation={3}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Box key={i} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
+                <Skeleton variant="circular" width={22} height={22} animation="wave" />
+                <Skeleton variant="text" width={32} height={10} animation="wave" />
+              </Box>
+            ))}
+          </Paper>
         </Box>
       </ThemeProvider>
     )
@@ -86,7 +121,7 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <AppShell />
       </BrowserRouter>
     </ThemeProvider>

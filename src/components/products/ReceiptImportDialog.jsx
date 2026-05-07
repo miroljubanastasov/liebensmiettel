@@ -16,6 +16,7 @@ import {
     listCameras, pickBackCamera, requestCameraPermission,
 } from '../../lib/barcode'
 import { upsertStore } from '../../lib/stores'
+import { matchScore } from '../../utils/receiptMatch'
 import ReceiptScanDialog from './ReceiptScanDialog'
 
 const STEPS = ['Photos', 'Process', 'Review']
@@ -33,7 +34,18 @@ const STEPS = ['Photos', 'Process', 'Review']
  *  2. Stop the camera, then OCR all photos sequentially.
  *  3. Review parsed store / date / items, save to pantry.
  */
-export default function ReceiptImportDialog({ open, onClose, onAddItems }) {
+export default function ReceiptImportDialog({
+    open,
+    onClose,
+    onAddItems,
+    // Match mode: when `matchTargets` is provided (e.g. already-checked
+    // basket items), the review step lets the user pair each parsed receipt
+    // line with an existing entry. Save calls `onApplyMatches` with
+    // `{ matched: [{ entryId, fields }], newItems: [...], storeRow }`.
+    matchTargets = null,
+    onApplyMatches = null,
+    title,
+}) {
     const [step, setStep] = useState(0)
 
     // Camera
@@ -65,6 +77,41 @@ export default function ReceiptImportDialog({ open, onClose, onAddItems }) {
     // Debug: raw OCR output (populated on each process run)
     const [rawText, setRawText] = useState('')
     const [showRaw, setShowRaw] = useState(false)
+
+    // Match mode: map parsed-item `_id` → target entry id, or '__new__'
+    // to add the parsed line as a new entry instead of matching.
+    const matchMode = !!matchTargets && !!onApplyMatches
+    const [matchMap, setMatchMap] = useState({})
+
+    // Greedy auto-match: sort all (item, target) pairs with score ≥ 0.3 by
+    // score desc, then assign each item to its best unused target.
+    useEffect(() => {
+        if (!matchMode || items.length === 0 || !matchTargets?.length) {
+            setMatchMap({})
+            return
+        }
+        const pairs = []
+        for (const it of items) {
+            for (const t of matchTargets) {
+                const s = matchScore({ name: t.name, brand: t.brand }, it)
+                if (s >= 0.3) pairs.push({ itemId: it._id, tid: t.id, s })
+            }
+        }
+        pairs.sort((a, b) => b.s - a.s)
+        const assigned = {}
+        const usedTargets = new Set()
+        for (const p of pairs) {
+            if (assigned[p.itemId] != null) continue
+            if (usedTargets.has(p.tid)) continue
+            assigned[p.itemId] = p.tid
+            usedTargets.add(p.tid)
+        }
+        // Any unmatched items default to "__new__"
+        for (const it of items) {
+            if (assigned[it._id] == null) assigned[it._id] = '__new__'
+        }
+        setMatchMap(assigned)
+    }, [matchMode, items, matchTargets])
 
     // Prewarm Tesseract while the user is still taking photos
     useEffect(() => {
@@ -198,6 +245,7 @@ export default function ReceiptImportDialog({ open, onClose, onAddItems }) {
         setTotalAmount(null)
         setItems([])
         setRawText(''); setShowRaw(false)
+        setMatchMap({})
     }
 
     const close = () => { stopCamera(); reset(); onClose() }
@@ -285,9 +333,59 @@ export default function ReceiptImportDialog({ open, onClose, onAddItems }) {
         }
     }
 
+    // Apply parsed items to existing basket entries (match mode). Matched
+    // items update price/store/purchased_at on the target entry; items
+    // routed to '__new__' are added as new (checked) entries.
+    const handleApply = async () => {
+        setError('')
+        try {
+            let storeId = null
+            let storeRow = null
+            if (storeData.name.trim()) {
+                const store = await upsertStore({
+                    name: storeData.name.trim(),
+                    address: storeData.address || null,
+                    city: storeData.city || null,
+                })
+                storeId = store?.id ?? null
+                storeRow = store ?? null
+            }
+            const purchasedAt = dateTime.date
+                ? new Date(`${dateTime.date}T${dateTime.time || '00:00'}`).toISOString()
+                : new Date().toISOString()
+
+            const matched = []
+            const newItems = []
+            for (const it of items) {
+                const target = matchMap[it._id]
+                const commonFields = {
+                    price: it.total_price ?? null,
+                    unit_price: it.unit_price ?? null,
+                    store_id: storeId,
+                    purchased_at: purchasedAt,
+                    entry_source: 'receipt',
+                }
+                if (!target || target === '__new__') {
+                    newItems.push({
+                        name: it.name,
+                        quantity: it.quantity || 1,
+                        unit: it.unit || 'pc',
+                        ...commonFields,
+                    })
+                } else {
+                    matched.push({ entryId: target, fields: commonFields })
+                }
+            }
+            await onApplyMatches({ matched, newItems, storeRow, storeId, purchasedAt })
+            close()
+        } catch (e) {
+            setError(e?.message || 'Failed to apply')
+        }
+    }
+
     return (
         <Dialog open={open} onClose={close} fullWidth maxWidth="sm">
-            <DialogTitle>Import receipt</DialogTitle>
+            <DialogTitle>{title ?? 'Import receipt'}</DialogTitle>
             <DialogContent>
                 <Stepper activeStep={step} alternativeLabel sx={{ mb: 2 }}>
                     {STEPS.map((label) => (
@@ -538,6 +636,34 @@ export default function ReceiptImportDialog({ open, onClose, onAddItems }) {
                                                             {qtyLine}
                                                         </Box>
                                                     )}
+                                                    {matchMode && (
+                                                        <TextField
+                                                            select
+                                                            size="small"
+                                                            variant="standard"
+                                                            value={matchMap[it._id] ?? '__new__'}
+                                                            onChange={(e) => setMatchMap((prev) => ({
+                                                                ...prev, [it._id]: e.target.value,
+                                                            }))}
+                                                            SelectProps={{ MenuProps: { PaperProps: { sx: { maxHeight: 320 } } } }}
+                                                            sx={{ mt: 0.25, '& .MuiInputBase-root': { fontSize: 12 } }}
+                                                        >
+                                                            <MenuItem value="__new__">
+                                                                <em>+ Add as new</em>
+                                                            </MenuItem>
+                                                            {matchTargets?.map((t) => {
+                                                                const usedBy = Object.entries(matchMap)
+                                                                    .find(([iid, tid]) => tid === t.id && String(iid) !== String(it._id))
+                                                                return (
+                                                                    <MenuItem key={t.id} value={t.id} disabled={!!usedBy}>
+                                                                        {t.name}
+                                                                        {t.brand ? ` · ${t.brand}` : ''}
+                                                                        {usedBy ? ' (taken)' : ''}
+                                                                    </MenuItem>
+                                                                )
+                                                            })}
+                                                        </TextField>
+                                                    )}
                                                 </Box>
                                                 <IconButton
                                                     size="small"
@@ -651,7 +777,23 @@ export default function ReceiptImportDialog({ open, onClose, onAddItems }) {
                         Process {blobs.length} photo{blobs.length === 1 ? '' : 's'}
                     </Button>
                 )}
-                {step === 2 && (
+                {step === 2 && matchMode && (() => {
+                    const matchedCount = items.reduce(
+                        (n, it) => n + (matchMap[it._id] && matchMap[it._id] !== '__new__' ? 1 : 0),
+                        0,
+                    )
+                    const newCount = items.length - matchedCount
+                    return (
+                        <Button
+                            variant="contained" onClick={handleApply}
+                            disabled={items.length === 0}
+                        >
+                            Apply {matchedCount} match{matchedCount === 1 ? '' : 'es'}
+                            {newCount > 0 ? ` · +${newCount} new` : ''}
+                        </Button>
+                    )
+                })()}
+                {step === 2 && !matchMode && (
                     <Button
                         variant="contained" onClick={handleSave}
                         disabled={items.length === 0}

@@ -69,6 +69,30 @@ const theme = createTheme({
                 },
             },
         },
+        // Suppress browser / password-manager autofill on our app fields.
+        // Chrome on Android and password managers show card / password
+        // sheets based on label heuristics ("Name", "Store", etc.). We
+        // never want that here, so we disable it at the theme level for
+        // every TextField / InputBase.
+        MuiTextField: {
+            defaultProps: {
+                autoComplete: 'off',
+            },
+        },
+        MuiInputBase: {
+            defaultProps: {
+                inputProps: {
+                    autoComplete: 'off',
+                    autoCorrect: 'off',
+                    autoCapitalize: 'off',
+                    spellCheck: 'false',
+                    'data-form-type': 'other',
+                    'data-lpignore': 'true',
+                    'data-1p-ignore': 'true',
+                    'data-bwignore': 'true',
+                },
+            },
+        },
     },
 })
 

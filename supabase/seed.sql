@@ -93,24 +93,57 @@ on conflict do nothing;
 
 -- =========================================================================
 -- STORE CHAINS (German retail)
+-- Generated from src/data/storeChains.js — regenerate via
+--   node scripts/build-store-chains-seed.js
+-- >>> STORE_CHAINS_BEGIN
+insert into public.store_chains (id, name, logo_url, country, color, kind, defunct, aliases) values
+    ('rewe', 'REWE', 'https://commons.wikimedia.org/w/thumb.php?f=Logo_REWE.svg&w=200', 'DE', '#cc071e', 'supermarket', false, '{"rewe","rewe markt","rewe city","rewe center","rewe to go"}'),
+    ('edeka', 'EDEKA', 'https://commons.wikimedia.org/w/thumb.php?f=Edeka_Logo_Aktuell.svg&w=200', 'DE', '#fff200', 'supermarket', false, '{"edeka","e center","e-center","edeka center","nahkauf","edeka neukauf"}'),
+    ('kaufland', 'Kaufland', 'https://commons.wikimedia.org/w/thumb.php?f=Kaufland_201x_logo.svg&w=200', 'DE', '#e10019', 'hypermarket', false, '{"kaufland"}'),
+    ('real', 'real', 'https://commons.wikimedia.org/w/thumb.php?f=Real_Logo_Clean.svg&w=200', 'DE', '#e30613', 'hypermarket', true, '{"real","real sb warenhaus"}'),
+    ('globus', 'Globus', 'https://commons.wikimedia.org/w/thumb.php?f=Globus_SB-Warenhaus_logo.svg&w=200', 'DE', '#004b87', 'hypermarket', false, '{"globus","globus sb warenhaus"}'),
+    ('marktkauf', 'Marktkauf', null, 'DE', '#e30613', 'hypermarket', false, '{"marktkauf"}'),
+    ('hit', 'HIT', null, 'DE', '#d40000', 'supermarket', false, '{"hit","hit markt"}'),
+    ('tegut', 'tegut…', 'https://commons.wikimedia.org/w/thumb.php?f=Tegut..._logo_and_claim.svg&w=200', 'DE', '#e3000f', 'supermarket', false, '{"tegut","tegut...","tegut…"}'),
+    ('famila', 'famila', null, 'DE', '#e2001a', 'supermarket', false, '{"famila","familia"}'),
+    ('combi', 'Combi', null, 'DE', '#e2001a', 'supermarket', false, '{"combi","combi verbrauchermarkt"}'),
+    ('wasgau', 'Wasgau', null, 'DE', '#d30013', 'supermarket', false, '{"wasgau"}'),
+    ('citti', 'CITTI', null, 'DE', '#e30613', 'hypermarket', false, '{"citti","citti markt"}'),
+    ('v-markt', 'V-Markt', null, 'DE', '#e30613', 'hypermarket', false, '{"v-markt","v markt","vmarkt"}'),
+    ('feneberg', 'Feneberg', null, 'DE', '#e30613', 'supermarket', false, '{"feneberg"}'),
+    ('lidl', 'Lidl', 'https://commons.wikimedia.org/w/thumb.php?f=Lidl-Logo.svg&w=200', 'DE', '#0050aa', 'discounter', false, '{"lidl"}'),
+    ('aldi-sued', 'ALDI SÜD', 'https://commons.wikimedia.org/w/thumb.php?f=Aldi_S%C3%BCd_2017_logo.svg&w=200', 'DE', '#00005f', 'discounter', false, '{"aldi süd","aldi sued","aldi s","aldisued"}'),
+    ('aldi-nord', 'ALDI Nord', 'https://commons.wikimedia.org/w/thumb.php?f=Aldi_Nord_201x_logo.svg&w=200', 'DE', '#0e3386', 'discounter', false, '{"aldi nord","aldi n","aldinord"}'),
+    ('aldi', 'ALDI', null, 'DE', '#00005f', 'discounter', false, '{"aldi"}'),
+    ('penny', 'Penny', 'https://commons.wikimedia.org/w/thumb.php?f=Penny-Logo.svg&w=200', 'DE', '#cd1719', 'discounter', false, '{"penny","penny markt"}'),
+    ('netto', 'Netto Marken-Discount', 'https://commons.wikimedia.org/w/thumb.php?f=Netto_logo.svg&w=200', 'DE', '#ffe500', 'discounter', false, '{"netto","netto marken-discount","netto marken discount","netto md"}'),
+    ('netto-dansk', 'Netto (Dansk)', null, 'DE', '#ffd500', 'discounter', false, '{"netto dansk","netto scottie","netto mit hund"}'),
+    ('norma', 'Norma', 'https://commons.wikimedia.org/w/thumb.php?f=Norma_Logo.svg&w=200', 'DE', '#ee7f00', 'discounter', false, '{"norma"}'),
+    ('mix-markt', 'Mix Markt', null, 'DE', '#d40000', 'discounter', false, '{"mix markt","mixmarkt"}'),
+    ('alnatura', 'Alnatura', null, 'DE', '#00a651', 'bio', false, '{"alnatura","alnatura super natur markt"}'),
+    ('denns', 'Denn''s Biomarkt', null, 'DE', '#f29400', 'bio', false, '{"denns","denn''s","denns biomarkt","denn''s biomarkt"}'),
+    ('bio-company', 'Bio Company', null, 'DE', '#009640', 'bio', false, '{"bio company","biocompany"}'),
+    ('basic', 'Basic', null, 'DE', '#76b82a', 'bio', false, '{"basic","basic bio"}'),
+    ('ebl-naturkost', 'ebl-naturkost', null, 'DE', '#76b82a', 'bio', false, '{"ebl","ebl naturkost","ebl-naturkost"}'),
+    ('dm', 'dm-drogerie markt', 'https://commons.wikimedia.org/w/thumb.php?f=Dm_Logo.svg&w=200', 'DE', '#00703c', 'drugstore', false, '{"dm","dm drogerie","dm-drogerie","dm-drogerie markt"}'),
+    ('rossmann', 'Rossmann', 'https://commons.wikimedia.org/w/thumb.php?f=Rossmann_Logo.svg&w=200', 'DE', '#e2001a', 'drugstore', false, '{"rossmann"}'),
+    ('budni', 'Budnikowsky', null, 'DE', '#ec6608', 'drugstore', false, '{"budni","budnikowsky"}'),
+    ('mueller', 'Müller', null, 'DE', '#e2001a', 'drugstore', false, '{"müller","mueller","müller drogerie"}'),
+    ('metro', 'Metro', null, 'DE', '#003d7a', 'cash_carry', false, '{"metro","metro c+c","metro cash carry"}'),
+    ('selgros', 'Selgros', null, 'DE', '#004b87', 'cash_carry', false, '{"selgros","selgros c+c"}'),
+    ('handelshof', 'Handelshof', null, 'DE', '#004b87', 'cash_carry', false, '{"handelshof"}'),
+    ('trinkgut', 'trinkgut', null, 'DE', '#0050aa', 'convenience', false, '{"trinkgut"}'),
+    ('getraenke-hoffmann', 'Getränke Hoffmann', null, 'DE', '#e30613', 'convenience', false, '{"getränke hoffmann","getraenke hoffmann","hoffmann"}')
+on conflict (id) do update set
+    name = excluded.name,
+    logo_url = excluded.logo_url,
+    country = excluded.country,
+    color = excluded.color,
+    kind = excluded.kind,
+    defunct = excluded.defunct,
+    aliases = excluded.aliases;
+-- <<< STORE_CHAINS_END
 -- =========================================================================
-insert into public.store_chains (id, name, logo_url, color) values
-    ('rewe',        'REWE',             'https://commons.wikimedia.org/w/thumb.php?f=Logo_REWE.svg&w=200',                           '#cc071e'),
-    ('lidl',        'Lidl',             'https://commons.wikimedia.org/w/thumb.php?f=Lidl-Logo.svg&w=200',                           '#0050aa'),
-    ('edeka',       'EDEKA',            'https://commons.wikimedia.org/w/thumb.php?f=Edeka_Logo_Aktuell.svg&w=200',                  '#fff200'),
-    ('aldi-sued',   'ALDI SÜD',        'https://commons.wikimedia.org/w/thumb.php?f=Aldi_S%C3%BCd_2017_logo.svg&w=200',             '#00005f'),
-    ('aldi-nord',   'ALDI Nord',        'https://commons.wikimedia.org/w/thumb.php?f=Aldi_Nord_201x_logo.svg&w=200',                 '#0e3386'),
-    ('penny',       'Penny',            'https://commons.wikimedia.org/w/thumb.php?f=Penny-Logo.svg&w=200',                          '#cd1719'),
-    ('netto',       'Netto Marken-Discount', 'https://commons.wikimedia.org/w/thumb.php?f=Netto_logo.svg&w=200',                     '#ffe500'),
-    ('kaufland',    'Kaufland',         'https://commons.wikimedia.org/w/thumb.php?f=Kaufland_201x_logo.svg&w=200',                  '#e10019'),
-    ('dm',          'dm-drogerie markt','https://commons.wikimedia.org/w/thumb.php?f=Dm_Logo.svg&w=200',                             '#00703c'),
-    ('rossmann',    'Rossmann',         'https://commons.wikimedia.org/w/thumb.php?f=Rossmann_Logo.svg&w=200',                       '#e2001a'),
-    ('real',        'real',             'https://commons.wikimedia.org/w/thumb.php?f=Real_Logo_Clean.svg&w=200',                     '#e30613'),
-    ('norma',       'Norma',            'https://commons.wikimedia.org/w/thumb.php?f=Norma_Logo.svg&w=200',                          '#ee7f00'),
-    ('tegut',       'tegut…',           'https://commons.wikimedia.org/w/thumb.php?f=Tegut..._logo_and_claim.svg&w=200',             '#e3000f'),
-    ('globus',      'Globus',           'https://commons.wikimedia.org/w/thumb.php?f=Globus_SB-Warenhaus_logo.svg&w=200',            '#004b87'),
-    ('hit',         'HIT',              null,                                                                                        '#d40000')
-on conflict (id) do nothing;
 
 -- Backfill chain_id on existing stores
 update public.stores set chain_id = 'rewe'  where id = 'cccccccc-cccc-cccc-cccc-cccccccccc01';

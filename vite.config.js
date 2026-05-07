@@ -4,6 +4,9 @@ import basicSsl from '@vitejs/plugin-basic-ssl'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Project repo on GitHub Pages serves at /liebensmiettel/.
+  // Override with VITE_BASE='/' for custom-domain or root deployments.
+  base: process.env.VITE_BASE ?? '/liebensmiettel/',
   plugins: [react(), basicSsl()],
   server: {
     https: true,

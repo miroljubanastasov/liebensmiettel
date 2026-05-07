@@ -1,12 +1,12 @@
-import { useState, useRef, useCallback, useMemo, useLayoutEffect } from 'react'
+import { useState, useRef, useCallback, useMemo, useLayoutEffect, useEffect } from 'react'
 import { flushSync } from 'react-dom'
 import {
     Box, Typography, List, ListItem, ListItemText,
-    ListItemAvatar, IconButton, Chip, CircularProgress, Divider,
+    ListItemAvatar, IconButton, Chip, Divider,
     ListItemButton, Collapse, Rating, Button,
     Dialog, DialogTitle, DialogContent, DialogActions, TextField,
     InputAdornment, ToggleButtonGroup, ToggleButton, Snackbar, Alert,
-    FormControlLabel, Checkbox,
+    FormControlLabel, Checkbox, MenuItem, Fab,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
@@ -17,10 +17,14 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import SearchIcon from '@mui/icons-material/Search'
 import ClearIcon from '@mui/icons-material/Clear'
+import AddIcon from '@mui/icons-material/Add'
 import TopBar from '../../components/layout/TopBar'
 import CategoryNav, { CATEGORY_ITEMS } from '../../components/layout/CategoryNav'
-import AddProductFAB from '../../components/layout/AddProductFAB'
+import SkeletonList from '../../components/layout/SkeletonList'
 import ManualAddDialog from '../../components/products/ManualAddDialog'
+import { ProductPickerDialog } from '../../components/products/ProductPicker'
+import { useRecentEntries, pickRecentStoreIds } from '../../hooks/useRecentEntries'
+import { listStores, listStoreChains } from '../../lib/stores'
 // Paused features — kept imported so re-enabling is one line in handleAdd.
 // import ReceiptImportDialog from '../../components/products/ReceiptImportDialog'
 // import ReturnFromShoppingDialog from '../../components/products/ReturnFromShoppingDialog'
@@ -39,21 +43,31 @@ import { useAuthStore } from '../../store/authStore'
 export default function Pantry() {
     const [activeIndex, setActiveIndex] = useState(0)
     const [transitioning, setTransitioning] = useState(false)
+    const [pickerOpen, setPickerOpen] = useState(false)
     const [dialogOpen, setDialogOpen] = useState(false)
+    const [pickedInitial, setPickedInitial] = useState(null)
     // const [receiptDialogOpen, setReceiptDialogOpen] = useState(false)
     // const [shoppingDialogOpen, setShoppingDialogOpen] = useState(false)
     const [expandedId, setExpandedId] = useState(null)
-    // Scan-to-consume / scan-to-dispose flow
+    // Scan-to-consume / scan-to-dispose flow (triggered from row actions)
     const [scanMode, setScanMode] = useState(null) // 'consume' | 'dispose' | null
     const [snack, setSnack] = useState(null) // { severity, message }
     // Filtering / sorting UI
     const [query, setQuery] = useState('')
-    const [sortBy, setSortBy] = useState('expiry') // 'expiry' | 'shelved'
+    const [sortBy, setSortBy] = useState('shelved') // 'shelved' | 'expiry'
     const catRef = useRef(null)
     const touchStart = useRef(null)
     const touchDragging = useRef(false)
     const listRef = useRef(null)
     const { entries, loading, addEntry, updateEntry, removeEntry, disposeEntry } = useProductEntries('in_pantry')
+    const { entries: recentEntries } = useRecentEntries({ enabled: true })
+    const [stores, setStores] = useState([])
+    const [storeChains, setStoreChains] = useState([])
+    useEffect(() => {
+        listStores().then((rows) => setStores(rows ?? []))
+        listStoreChains().then((rows) => setStoreChains(rows ?? []))
+    }, [])
+    const recentStoreIds = useMemo(() => pickRecentStoreIds(recentEntries), [recentEntries])
 
     // Edit dialog
     const [editEntry, setEditEntry] = useState(null)
@@ -90,7 +104,7 @@ export default function Pantry() {
         }
         if (consumeAddToShopping) {
             const now = new Date().toISOString()
-            await supabase.from('product_entries').insert({
+            const { error: insertErr } = await supabase.from('product_entries').insert({
                 name: consumeEntry.name,
                 brand: consumeEntry.brand ?? null,
                 ean: consumeEntry.ean ?? null,
@@ -100,9 +114,15 @@ export default function Pantry() {
                 unit: consumeEntry.unit ?? null,
                 status: 'listed',
                 user_id: consumeUser?.id ?? null,
-                entry_source: 'pantry_consume',
+                household_id: consumeEntry.household_id ?? null,
+                entry_source: 'manual',
                 listed_at: now,
             })
+            if (insertErr) {
+                setSnack({ severity: 'error', message: `Could not add to shopping list: ${insertErr.message}` })
+            } else {
+                setSnack({ severity: 'success', message: `Added ${consumeEntry.name} to shopping list.` })
+            }
         }
         setConsumeEntry(null)
         setConsumeAddToShopping(false)
@@ -122,13 +142,31 @@ export default function Pantry() {
 
     const toggleExpand = (id) => setExpandedId((prev) => prev === id ? null : id)
 
-    const handleAdd = (method) => {
-        if (method === 'item') setDialogOpen(true)
-        else if (method === 'consume') setScanMode('consume')
-        else if (method === 'dispose') setScanMode('dispose')
-        // Paused (scaffolding kept):
-        // else if (method === 'receipt') setReceiptDialogOpen(true)
-        // else if (method === 'shopping') setShoppingDialogOpen(true)
+    // FAB → product picker wizard → manual add dialog (with the picked
+    // product, category, subcategory and unit prefilled).
+    const handleFabClick = () => {
+        setPickedInitial(null)
+        setPickerOpen(true)
+    }
+
+    const handlePickerSelect = (sel) => {
+        // sel: { name, category, subcategory, unit, defaultQty, store }
+        // Flatten the picker's store sub-object into the prefill payload
+        // expected by ManualAddDialog's `initial` prop.
+        const { store, ...rest } = sel
+        setPickedInitial({
+            ...rest,
+            store_id: store?.store_id ?? null,
+            store_name: store?.store_name ?? '',
+            store_chain_id: store?.chain_id ?? null,
+        })
+        setPickerOpen(false)
+        setDialogOpen(true)
+    }
+
+    const handleAddDialogClose = () => {
+        setDialogOpen(false)
+        setPickedInitial(null)
     }
 
     // Handle a scanned EAN from the barcode dialog.
@@ -513,58 +551,56 @@ export default function Pantry() {
                     onCatSlideChange={handleCatSlideChange}
                     counts={categoryCounts}
                 />
-                {!loading && (
-                    <Box sx={{ px: 2, pb: 0.75, display: 'flex', gap: 0.75, alignItems: 'center' }}>
-                        <TextField
-                            size="small"
-                            placeholder="Search…"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            sx={{
-                                flex: 1, minWidth: 0,
-                                '& .MuiInputBase-root': { height: 32, fontSize: 13 },
-                                '& .MuiInputBase-input': { py: 0.25 },
-                            }}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start" sx={{ mr: 0.5 }}>
-                                        <SearchIcon sx={{ fontSize: 16 }} />
-                                    </InputAdornment>
-                                ),
-                                endAdornment: query ? (
-                                    <InputAdornment position="end">
-                                        <IconButton size="small" onClick={() => setQuery('')} sx={{ p: 0.25 }}>
-                                            <ClearIcon sx={{ fontSize: 16 }} />
-                                        </IconButton>
-                                    </InputAdornment>
-                                ) : null,
-                            }}
-                        />
-                        <ToggleButtonGroup
-                            size="small"
-                            exclusive
-                            value={sortBy}
-                            onChange={(_, v) => v && setSortBy(v)}
-                            aria-label="Sort by"
-                            sx={{
-                                '& .MuiToggleButton-root': {
-                                    py: 0.25, px: 1, fontSize: 11, lineHeight: 1.2, height: 32,
-                                },
-                            }}
-                        >
-                            <ToggleButton value="expiry">Expiry</ToggleButton>
-                            <ToggleButton value="shelved">Shelved</ToggleButton>
-                        </ToggleButtonGroup>
-                    </Box>
-                )}
+                <Box sx={{ px: 2, pb: 0.75, display: 'flex', gap: 0.75, alignItems: 'center' }}>
+                    <TextField
+                        size="small"
+                        placeholder="Search…"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        sx={{
+                            flex: 1, minWidth: 0,
+                            '& .MuiInputBase-root': { height: 32, fontSize: 13 },
+                            '& .MuiInputBase-input': { py: 0.25 },
+                        }}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start" sx={{ mr: 0.5 }}>
+                                    <SearchIcon sx={{ fontSize: 16 }} />
+                                </InputAdornment>
+                            ),
+                            endAdornment: query ? (
+                                <InputAdornment position="end">
+                                    <IconButton size="small" onClick={() => setQuery('')} sx={{ p: 0.25 }}>
+                                        <ClearIcon sx={{ fontSize: 16 }} />
+                                    </IconButton>
+                                </InputAdornment>
+                            ) : null,
+                        }}
+                    />
+                    <TextField
+                        select
+                        size="small"
+                        label="Sort by"
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        sx={{
+                            minWidth: 130,
+                            '& .MuiInputBase-root': { height: 32, fontSize: 12 },
+                            '& .MuiInputLabel-root': { fontSize: 12 },
+                        }}
+                    >
+                        <MenuItem value="shelved">Shelved</MenuItem>
+                        <MenuItem value="expiry">Expires</MenuItem>
+                    </TextField>
+                </Box>
             </Box>
 
             {/* In-flow spacer that reserves the navbar's actual height. */}
             <Box sx={{ height: navbarHeight }} aria-hidden />
 
             {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
-                    <CircularProgress />
+                <Box sx={{ px: 2, pt: 1, minHeight: '60vh' }}>
+                    <SkeletonList rows={7} avatarSize={32} />
                 </Box>
             ) : (
                 <Box
@@ -578,13 +614,34 @@ export default function Pantry() {
                 </Box>
             )}
 
-            <AddProductFAB onAction={handleAdd} />
+            {/* Single + button → opens the category grid wizard, which then
+                walks through subcategory → product and lands in the manual
+                add dialog with the selection prefilled. */}
+            <Fab
+                color="primary"
+                onClick={handleFabClick}
+                sx={{ position: 'fixed', bottom: 80, right: 20, zIndex: 1100, boxShadow: 4 }}
+                aria-label="Add to pantry"
+            >
+                <AddIcon />
+            </Fab>
+
+            <ProductPickerDialog
+                open={pickerOpen}
+                onClose={() => setPickerOpen(false)}
+                onSelect={handlePickerSelect}
+                recentEntries={recentEntries}
+                stores={stores}
+                storeChains={storeChains}
+                recentStoreIds={recentStoreIds}
+            />
 
             <ManualAddDialog
                 open={dialogOpen}
-                onClose={() => setDialogOpen(false)}
+                onClose={handleAddDialogClose}
                 onAdd={addEntry}
                 mode="pantry"
+                initial={pickedInitial}
             />
 
             {/* Paused: receipt import + return-from-shopping. Scaffolding kept

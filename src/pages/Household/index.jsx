@@ -6,6 +6,7 @@ import {
     List, ListItem, ListItemAvatar, ListItemText, ListItemSecondaryAction,
     Divider,
 } from '@mui/material'
+import SkeletonList from '../../components/layout/SkeletonList'
 import HomeIcon from '@mui/icons-material/Home'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import PersonIcon from '@mui/icons-material/Person'
@@ -283,9 +284,7 @@ export default function Household() {
                         </Card>
 
                         {loading ? (
-                            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-                                <CircularProgress />
-                            </Box>
+                            <SkeletonList rows={4} avatarSize={36} showTrailing={false} sx={{ mt: 2 }} />
                         ) : (
                             <>
                                 {/* Members section */}

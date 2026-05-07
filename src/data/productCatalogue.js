@@ -1775,3 +1775,128 @@ export function findGenericByAlias(text) {
     if (!norm) return null
     return _ALIAS_INDEX.get(norm) || null
 }
+
+// ═════════════════════════════════════════════════════════════════════════════
+// GENERIC BASICS — top-tier short names for quick entry
+// ─────────────────────────────────────────────────────────────────────────────
+// These are the plain, user-facing umbrella terms a shopper types first
+// ("Milch", "Käse", "Saft", "Bananen") when they haven't picked a specific
+// variant yet. They live above the full catalogue in suggestion lists so the
+// generic option is always reachable with a few keystrokes.
+//
+// Each entry resolves to a concrete category + subcategory, so selecting one
+// pre-fills those fields in ManualAddDialog without committing to a brand or
+// variant. `defaultUnit` / `defaultQty` provide sensible add-to-list defaults.
+// ═════════════════════════════════════════════════════════════════════════════
+
+export const GENERIC_BASICS = [
+    // Dairy & Eggs
+    { name: 'Milch', category: 'Dairy & Eggs', subcategory: 'Milch', defaultUnit: 'L', defaultQty: 1 },
+    { name: 'Joghurt', category: 'Dairy & Eggs', subcategory: 'Joghurt', defaultUnit: 'g', defaultQty: 500 },
+    { name: 'Quark', category: 'Dairy & Eggs', subcategory: 'Quark', defaultUnit: 'g', defaultQty: 500 },
+    { name: 'Käse', category: 'Dairy & Eggs', subcategory: 'Käse — Schnitt- & Hartkäse', defaultUnit: 'g', defaultQty: 200 },
+    { name: 'Frischkäse', category: 'Dairy & Eggs', subcategory: 'Käse — Frischkäse & Aufstrich', defaultUnit: 'g', defaultQty: 200 },
+    { name: 'Mozzarella', category: 'Dairy & Eggs', subcategory: 'Käse — Italienisch', defaultUnit: 'g', defaultQty: 125 },
+    { name: 'Butter', category: 'Dairy & Eggs', subcategory: 'Butter & Margarine', defaultUnit: 'g', defaultQty: 250 },
+    { name: 'Sahne', category: 'Dairy & Eggs', subcategory: 'Sahne & Crème', defaultUnit: 'ml', defaultQty: 200 },
+    { name: 'Eier', category: 'Dairy & Eggs', subcategory: 'Eier', defaultUnit: 'pc', defaultQty: 10 },
+
+    // Fruits & Veg — Obst
+    { name: 'Äpfel', category: 'Fruits & Veg', subcategory: 'Frisches Obst — Kernobst', defaultUnit: 'kg', defaultQty: 1 },
+    { name: 'Birnen', category: 'Fruits & Veg', subcategory: 'Frisches Obst — Kernobst', defaultUnit: 'kg', defaultQty: 1 },
+    { name: 'Bananen', category: 'Fruits & Veg', subcategory: 'Frisches Obst — Bananen & Tropisch', defaultUnit: 'kg', defaultQty: 1 },
+    { name: 'Orangen', category: 'Fruits & Veg', subcategory: 'Frisches Obst — Zitrusfrüchte', defaultUnit: 'kg', defaultQty: 1 },
+    { name: 'Mandarinen', category: 'Fruits & Veg', subcategory: 'Frisches Obst — Zitrusfrüchte', defaultUnit: 'kg', defaultQty: 1 },
+    { name: 'Zitronen', category: 'Fruits & Veg', subcategory: 'Frisches Obst — Zitrusfrüchte', defaultUnit: 'pc', defaultQty: 3 },
+    { name: 'Erdbeeren', category: 'Fruits & Veg', subcategory: 'Frisches Obst — Beeren', defaultUnit: 'g', defaultQty: 500 },
+    { name: 'Heidelbeeren', category: 'Fruits & Veg', subcategory: 'Frisches Obst — Beeren', defaultUnit: 'g', defaultQty: 250 },
+    { name: 'Weintrauben', category: 'Fruits & Veg', subcategory: 'Frisches Obst — Trauben & Melonen', defaultUnit: 'kg', defaultQty: 0.5 },
+
+    // Fruits & Veg — Gemüse
+    { name: 'Kartoffeln', category: 'Fruits & Veg', subcategory: 'Gemüse — Wurzelgemüse', defaultUnit: 'kg', defaultQty: 2 },
+    { name: 'Karotten', category: 'Fruits & Veg', subcategory: 'Gemüse — Wurzelgemüse', defaultUnit: 'kg', defaultQty: 1 },
+    { name: 'Zwiebeln', category: 'Fruits & Veg', subcategory: 'Gemüse — Zwiebeln & Knoblauch', defaultUnit: 'kg', defaultQty: 1 },
+    { name: 'Knoblauch', category: 'Fruits & Veg', subcategory: 'Gemüse — Zwiebeln & Knoblauch', defaultUnit: 'pc', defaultQty: 1 },
+    { name: 'Tomaten', category: 'Fruits & Veg', subcategory: 'Gemüse — Tomaten & Paprika', defaultUnit: 'kg', defaultQty: 0.5 },
+    { name: 'Paprika', category: 'Fruits & Veg', subcategory: 'Gemüse — Tomaten & Paprika', defaultUnit: 'pc', defaultQty: 3 },
+    { name: 'Gurken', category: 'Fruits & Veg', subcategory: 'Gemüse — Kürbis & Gurke', defaultUnit: 'pc', defaultQty: 1 },
+    { name: 'Brokkoli', category: 'Fruits & Veg', subcategory: 'Gemüse — Kohl', defaultUnit: 'pc', defaultQty: 1 },
+    { name: 'Salat', category: 'Fruits & Veg', subcategory: 'Gemüse — Blattsalate & Grün', defaultUnit: 'pc', defaultQty: 1 },
+    { name: 'Spinat', category: 'Fruits & Veg', subcategory: 'Gemüse — Blattsalate & Grün', defaultUnit: 'g', defaultQty: 250 },
+    { name: 'Pilze', category: 'Fruits & Veg', subcategory: 'Pilze', defaultUnit: 'g', defaultQty: 250 },
+    { name: 'Nüsse', category: 'Fruits & Veg', subcategory: 'Nüsse & Kerne', defaultUnit: 'g', defaultQty: 200 },
+
+    // Meat & Fish
+    { name: 'Fleisch', category: 'Meat & Fish', subcategory: 'Rindfleisch', defaultUnit: 'g', defaultQty: 500 },
+    { name: 'Hähnchen', category: 'Meat & Fish', subcategory: 'Geflügel', defaultUnit: 'g', defaultQty: 500 },
+    { name: 'Rindfleisch', category: 'Meat & Fish', subcategory: 'Rindfleisch', defaultUnit: 'g', defaultQty: 500 },
+    { name: 'Schweinefleisch', category: 'Meat & Fish', subcategory: 'Schweinefleisch', defaultUnit: 'g', defaultQty: 500 },
+    { name: 'Hackfleisch', category: 'Meat & Fish', subcategory: 'Rindfleisch', defaultUnit: 'g', defaultQty: 500 },
+    { name: 'Wurst', category: 'Meat & Fish', subcategory: 'Wurst & Würstchen', defaultUnit: 'g', defaultQty: 200 },
+    { name: 'Aufschnitt', category: 'Meat & Fish', subcategory: 'Aufschnitt & Wurstwaren', defaultUnit: 'g', defaultQty: 150 },
+    { name: 'Schinken', category: 'Meat & Fish', subcategory: 'Aufschnitt & Wurstwaren', defaultUnit: 'g', defaultQty: 150 },
+    { name: 'Fisch', category: 'Meat & Fish', subcategory: 'Frischer Fisch', defaultUnit: 'g', defaultQty: 400 },
+    { name: 'Lachs', category: 'Meat & Fish', subcategory: 'Frischer Fisch', defaultUnit: 'g', defaultQty: 300 },
+    { name: 'Thunfisch', category: 'Meat & Fish', subcategory: 'Fisch aus der Dose / geräuchert', defaultUnit: 'g', defaultQty: 200 },
+
+    // Drinks
+    { name: 'Wasser', category: 'Drinks', subcategory: 'Wasser', defaultUnit: 'L', defaultQty: 1.5 },
+    { name: 'Saft', category: 'Drinks', subcategory: 'Saft', defaultUnit: 'L', defaultQty: 1 },
+    { name: 'Orangensaft', category: 'Drinks', subcategory: 'Saft', defaultUnit: 'L', defaultQty: 1 },
+    { name: 'Apfelsaft', category: 'Drinks', subcategory: 'Saft', defaultUnit: 'L', defaultQty: 1 },
+    { name: 'Limonade', category: 'Drinks', subcategory: 'Schorle & Limonaden', defaultUnit: 'L', defaultQty: 1 },
+    { name: 'Cola', category: 'Drinks', subcategory: 'Schorle & Limonaden', defaultUnit: 'L', defaultQty: 1.5 },
+    { name: 'Kaffee', category: 'Drinks', subcategory: 'Kaffee', defaultUnit: 'g', defaultQty: 500 },
+    { name: 'Tee', category: 'Drinks', subcategory: 'Tee', defaultUnit: 'pkg', defaultQty: 1 },
+    { name: 'Hafermilch', category: 'Drinks', subcategory: 'Pflanzenmilch', defaultUnit: 'L', defaultQty: 1 },
+    { name: 'Mandelmilch', category: 'Drinks', subcategory: 'Pflanzenmilch', defaultUnit: 'L', defaultQty: 1 },
+    { name: 'Sojamilch', category: 'Drinks', subcategory: 'Pflanzenmilch', defaultUnit: 'L', defaultQty: 1 },
+    { name: 'Bier', category: 'Drinks', subcategory: 'Bier', defaultUnit: 'L', defaultQty: 0.5 },
+    { name: 'Wein', category: 'Drinks', subcategory: 'Wein & Sekt', defaultUnit: 'ml', defaultQty: 750 },
+
+    // Bread & Grains
+    { name: 'Brot', category: 'Bread & Grains', subcategory: 'Brot', defaultUnit: 'pc', defaultQty: 1 },
+    { name: 'Brötchen', category: 'Bread & Grains', subcategory: 'Brötchen & Kleingebäck', defaultUnit: 'pc', defaultQty: 6 },
+    { name: 'Toast', category: 'Bread & Grains', subcategory: 'Brot', defaultUnit: 'pc', defaultQty: 1 },
+    { name: 'Nudeln', category: 'Bread & Grains', subcategory: 'Nudeln', defaultUnit: 'g', defaultQty: 500 },
+    { name: 'Reis', category: 'Bread & Grains', subcategory: 'Reis', defaultUnit: 'g', defaultQty: 1000 },
+    { name: 'Mehl', category: 'Bread & Grains', subcategory: 'Mehl', defaultUnit: 'kg', defaultQty: 1 },
+    { name: 'Haferflocken', category: 'Bread & Grains', subcategory: 'Andere Getreide', defaultUnit: 'g', defaultQty: 500 },
+    { name: 'Müsli', category: 'Bread & Grains', subcategory: 'Frühstückscerealien', defaultUnit: 'g', defaultQty: 500 },
+    { name: 'Cornflakes', category: 'Bread & Grains', subcategory: 'Frühstückscerealien', defaultUnit: 'g', defaultQty: 500 },
+
+    // Snacks & Sweets
+    { name: 'Schokolade', category: 'Snacks & Sweets', subcategory: 'Schokolade', defaultUnit: 'g', defaultQty: 100 },
+    { name: 'Kekse', category: 'Snacks & Sweets', subcategory: 'Kekse & Gebäck', defaultUnit: 'g', defaultQty: 200 },
+    { name: 'Chips', category: 'Snacks & Sweets', subcategory: 'Salzige Snacks', defaultUnit: 'g', defaultQty: 175 },
+    { name: 'Bonbons', category: 'Snacks & Sweets', subcategory: 'Süßigkeiten', defaultUnit: 'g', defaultQty: 200 },
+    { name: 'Eis', category: 'Snacks & Sweets', subcategory: 'Eis', defaultUnit: 'ml', defaultQty: 500 },
+
+    // Frozen
+    { name: 'TK-Gemüse', category: 'Frozen', subcategory: 'TK-Gemüse', defaultUnit: 'g', defaultQty: 500 },
+    { name: 'TK-Pommes', category: 'Frozen', subcategory: 'TK-Kartoffelprodukte', defaultUnit: 'g', defaultQty: 750 },
+    { name: 'TK-Pizza', category: 'Frozen', subcategory: 'TK-Fertiggerichte', defaultUnit: 'pc', defaultQty: 1 },
+    { name: 'TK-Beeren', category: 'Frozen', subcategory: 'TK-Obst', defaultUnit: 'g', defaultQty: 500 },
+
+    // Ready Meals
+    { name: 'Suppe', category: 'Ready Meals', subcategory: 'Suppen', defaultUnit: 'ml', defaultQty: 400 },
+    { name: 'Nudelsoße', category: 'Ready Meals', subcategory: 'Nudelsoßen (Glas)', defaultUnit: 'g', defaultQty: 400 },
+    { name: 'Tomatensoße', category: 'Ready Meals', subcategory: 'Tomatenprodukte', defaultUnit: 'g', defaultQty: 400 },
+    { name: 'Hummus', category: 'Ready Meals', subcategory: 'Dips & Aufstriche (herzhaft)', defaultUnit: 'g', defaultQty: 200 },
+
+    // Condiments
+    { name: 'Öl', category: 'Condiments', subcategory: 'Speiseöle', defaultUnit: 'ml', defaultQty: 500 },
+    { name: 'Olivenöl', category: 'Condiments', subcategory: 'Speiseöle', defaultUnit: 'ml', defaultQty: 500 },
+    { name: 'Essig', category: 'Condiments', subcategory: 'Essig', defaultUnit: 'ml', defaultQty: 500 },
+    { name: 'Ketchup', category: 'Condiments', subcategory: 'Tischsoßen', defaultUnit: 'ml', defaultQty: 500 },
+    { name: 'Senf', category: 'Condiments', subcategory: 'Tischsoßen', defaultUnit: 'g', defaultQty: 250 },
+    { name: 'Mayonnaise', category: 'Condiments', subcategory: 'Tischsoßen', defaultUnit: 'ml', defaultQty: 250 },
+    { name: 'Sojasoße', category: 'Condiments', subcategory: 'Asiatische Soßen & Pasten', defaultUnit: 'ml', defaultQty: 250 },
+    { name: 'Salz', category: 'Condiments', subcategory: 'Gewürze (getrocknet)', defaultUnit: 'g', defaultQty: 500 },
+    { name: 'Pfeffer', category: 'Condiments', subcategory: 'Gewürze (getrocknet)', defaultUnit: 'g', defaultQty: 50 },
+    { name: 'Zucker', category: 'Condiments', subcategory: 'Zucker & Süßungsmittel', defaultUnit: 'kg', defaultQty: 1 },
+    { name: 'Honig', category: 'Condiments', subcategory: 'Zucker & Süßungsmittel', defaultUnit: 'g', defaultQty: 500 },
+    { name: 'Marmelade', category: 'Condiments', subcategory: 'Marmelade & Aufstrich', defaultUnit: 'g', defaultQty: 450 },
+    { name: 'Nutella', category: 'Condiments', subcategory: 'Marmelade & Aufstrich', defaultUnit: 'g', defaultQty: 450 },
+]
+

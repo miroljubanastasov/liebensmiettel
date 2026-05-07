@@ -122,6 +122,14 @@ export function useProductEntries(status) {
         // Enrich with product-level data (labels + nutrition) so the new row
         // shows up fully populated without waiting for a page refresh.
         let enriched = data
+        if (data?.store_id) {
+            const { data: storeRow } = await supabase
+                .from('stores')
+                .select('id, name, chain, chain_id, chain_data:store_chains ( id, name, logo_url, color )')
+                .eq('id', data.store_id)
+                .maybeSingle()
+            if (storeRow) enriched = { ...enriched, store: storeRow }
+        }
         if (data?.ean) {
             const { data: prod } = await supabase
                 .from('products')
@@ -165,7 +173,27 @@ export function useProductEntries(status) {
             .update(fields)
             .eq('id', id)
         if (err) return false
-        setEntries((prev) => prev.map((e) => e.id === id ? { ...e, ...fields } : e))
+
+        // When store_id changes we also need to hydrate the nested `store`
+        // (with chain_data.logo_url) so UI bits like the store logo update
+        // without waiting for a page refresh.
+        let storePatch = null
+        if (Object.prototype.hasOwnProperty.call(fields, 'store_id')) {
+            if (fields.store_id) {
+                const { data: storeRow } = await supabase
+                    .from('stores')
+                    .select('id, name, chain, chain_id, chain_data:store_chains ( id, name, logo_url, color )')
+                    .eq('id', fields.store_id)
+                    .maybeSingle()
+                storePatch = { store: storeRow ?? null }
+            } else {
+                storePatch = { store: null }
+            }
+        }
+
+        setEntries((prev) => prev.map((e) =>
+            e.id === id ? { ...e, ...fields, ...(storePatch ?? {}) } : e
+        ))
         return true
     }, [])
 

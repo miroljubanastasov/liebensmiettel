@@ -1,12 +1,12 @@
 import { useState, useRef, useCallback, useMemo, useLayoutEffect, useEffect } from 'react'
 import { flushSync } from 'react-dom'
 import {
-    Box, Typography, ListItemText,
-    ListItemAvatar, IconButton, Chip, CircularProgress, Divider,
+    Box, Typography, ListItemText, Stack,
+    ListItemAvatar, IconButton, Chip, Divider,
     ListItemButton, Collapse, Button,
     Dialog, DialogTitle, DialogContent, DialogActions, TextField,
     InputAdornment, ToggleButtonGroup, ToggleButton, Snackbar, Alert,
-    Checkbox, Autocomplete,
+    Checkbox, Autocomplete, MenuItem,
 } from '@mui/material'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
@@ -18,16 +18,24 @@ import ClearIcon from '@mui/icons-material/Clear'
 import KitchenIcon from '@mui/icons-material/Kitchen'
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket'
 import EditIcon from '@mui/icons-material/Edit'
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong'
 import TopBar from '../../components/layout/TopBar'
 import CategoryNav, { CATEGORY_ITEMS } from '../../components/layout/CategoryNav'
 import AddProductFAB from '../../components/layout/AddProductFAB'
+import SkeletonList from '../../components/layout/SkeletonList'
 import ManualAddDialog from '../../components/products/ManualAddDialog'
+import { ProductPickerDialog } from '../../components/products/ProductPicker'
 import ProductAvatar from '../../components/products/ProductAvatar'
 import NutriScoreBar from '../../components/products/NutriScoreBar'
 import FoodLabels from '../../components/products/FoodLabels'
 import NutritionFacts from '../../components/products/NutritionFacts'
+import ReceiptImportDialog from '../../components/products/ReceiptImportDialog'
 import { useProductEntries } from '../../hooks/useProductEntries'
-import { listStores, listStoreChains, upsertStore } from '../../lib/stores'
+import { useRecentEntries, pickRecentNames, pickRecentBrands, pickRecentStoreIds } from '../../hooks/useRecentEntries'
+import { listStores, listStoreChains, upsertStore, findChainByName } from '../../lib/stores'
+import StorePicker from '../../components/products/StorePicker'
+import { listTopBrands, getPrivateLabelsFor } from '../../lib/brands'
+import PRODUCT_CATALOGUE, { GENERIC_BASICS } from '../../data/productCatalogue'
 
 const UNIT_OPTIONS = ['pc', 'g', 'kg', 'ml', 'L', 'pkg', 'bunch', 'bottle', 'can', 'box']
 
@@ -35,20 +43,27 @@ export default function GroceryList() {
     const [activeIndex, setActiveIndex] = useState(0)
     const [transitioning, setTransitioning] = useState(false)
     const [dialogOpen, setDialogOpen] = useState(false)
+    const [pickerOpen, setPickerOpen] = useState(false)
+    const [pickedInitial, setPickedInitial] = useState(null)
     const [expandedId, setExpandedId] = useState(null)
     const [snack, setSnack] = useState(null) // { severity, message }
     // Filtering / sorting UI
     const [query, setQuery] = useState('')
-    const [sortBy, setSortBy] = useState('store') // 'store' | 'name'
+    const [sortBy, setSortBy] = useState('added') // 'added' | 'store'
+    // Multi-select: empty array = no filter (All). '__none__' sentinel
+    // represents entries without any store.
+    const [storeFilter, setStoreFilter] = useState([])
     const catRef = useRef(null)
     const touchStart = useRef(null)
     const touchDragging = useRef(false)
     const listRef = useRef(null)
     const { entries, loading, addEntry, updateEntry, removeEntry, patchEntry, toggleChecked, moveEntry } = useProductEntries('listed')
     const [basketOpen, setBasketOpen] = useState(false)
+    const [receiptOpen, setReceiptOpen] = useState(false)
     const [quantityDrafts, setQuantityDrafts] = useState({})
     const [unitDrafts, setUnitDrafts] = useState({})
-    const [storeDrafts, setStoreDrafts] = useState({})
+    const [nameDrafts, setNameDrafts] = useState({})
+    const [brandDrafts, setBrandDrafts] = useState({})
     const [stores, setStores] = useState([])
     const [storeChains, setStoreChains] = useState([])
 
@@ -60,18 +75,96 @@ export default function GroceryList() {
         listStoreChains().then((rows) => setStoreChains(rows ?? []))
     }, [])
 
-    const storeSuggestions = useMemo(() => {
-        const names = new Set()
-        for (const s of stores) {
-            if (s?.name) names.add(s.name)
-            if (s?.chain_data?.name) names.add(s.chain_data.name)
-            if (s?.chain) names.add(s.chain)
+    // ── Recent entries + cross-field suggestions (names / brands) ─────────
+    const { entries: recentEntries } = useRecentEntries({ enabled: true })
+
+    // Most-used store ids drive the StorePicker tile order.
+    const recentStoreIds = useMemo(
+        () => pickRecentStoreIds(recentEntries),
+        [recentEntries],
+    )
+
+    // Base brand list (recent + top brands). Private labels are prepended
+    // per-row because they depend on the row's store chain.
+    const brandOptionsBase = useMemo(() => {
+        const out = []
+        const seen = new Set()
+        const push = (name, group) => {
+            if (!name) return
+            const key = name.toLowerCase()
+            if (seen.has(key)) return
+            seen.add(key)
+            out.push({ label: name, group })
         }
-        for (const c of storeChains) {
-            if (c?.name) names.add(c.name)
+        for (const b of pickRecentBrands(recentEntries)) push(b, 'Zuletzt verwendet')
+        for (const b of listTopBrands(400)) push(b.name, 'Marken')
+        return out
+    }, [recentEntries])
+
+    const getNameOptions = useCallback((category) => {
+        const basics = GENERIC_BASICS
+            .filter((p) => !category || p.category === category)
+            .map((p) => ({
+                kind: 'basic',
+                label: p.name,
+                name: p.name,
+                brand: '',
+                category: p.category,
+                subcategory: p.subcategory || '',
+                unit: p.defaultUnit || null,
+                defaultQty: p.defaultQty ?? null,
+                group: 'Basis',
+            }))
+        const basicKeys = new Set(basics.map((b) => b.name.toLowerCase()))
+        const recent = pickRecentNames(recentEntries, { category: category || null })
+            .filter((r) => !basicKeys.has((r.name || '').toLowerCase()))
+            .map((r) => ({
+                kind: 'recent',
+                label: r.name,
+                name: r.name,
+                brand: r.brand || '',
+                category: r.category || category || '',
+                subcategory: r.subcategory || '',
+                unit: r.unit || null,
+                defaultQty: null,
+                group: 'Zuletzt verwendet',
+            }))
+        const seen = new Set([...basicKeys, ...recent.map((r) => r.name.toLowerCase())])
+        const catalogue = PRODUCT_CATALOGUE
+            .filter((p) => !category || p.category === category)
+            .filter((p) => !seen.has(p.name.toLowerCase()))
+            .map((p) => ({
+                kind: 'catalogue',
+                label: p.name,
+                name: p.name,
+                brand: '',
+                category: p.category,
+                subcategory: p.subcategory || '',
+                unit: p.defaultUnit || null,
+                defaultQty: p.defaultQty ?? null,
+                group: 'Katalog',
+            }))
+        return [...basics, ...recent, ...catalogue]
+    }, [recentEntries])
+
+    const getBrandOptions = useCallback((chainId) => {
+        if (!chainId) return brandOptionsBase
+        const out = []
+        const seen = new Set()
+        for (const b of getPrivateLabelsFor(chainId)) {
+            const key = b.name.toLowerCase()
+            if (seen.has(key)) continue
+            seen.add(key)
+            out.push({ label: b.name, group: 'Eigenmarken' })
         }
-        return [...names].sort((a, b) => a.localeCompare(b))
-    }, [stores, storeChains])
+        for (const o of brandOptionsBase) {
+            const key = o.label.toLowerCase()
+            if (seen.has(key)) continue
+            seen.add(key)
+            out.push(o)
+        }
+        return out
+    }, [brandOptionsBase])
 
     const handleDelete = async () => {
         if (!deleteEntry_) return
@@ -88,22 +181,30 @@ export default function GroceryList() {
         await updateEntry(entry.id, { quantity: qty })
     }
 
-    const saveStore = async (entry) => {
-        const raw = storeDrafts[entry.id]
-        if (raw == null) return
-        const next = raw.trim()
-        const current = (entry.store?.name ?? '').trim()
-        if (next === current) return
-        let storeId = null
+    // Picker-driven store selection: applies a structured selection from
+    // StorePicker (supports None, an existing store, a chain that needs
+    // upsert, or a freeform custom name).
+    const applyStoreSelection = async (entry, sel) => {
+        const currentId = entry.store_id ?? entry.store?.id ?? null
+        let storeId = sel.store_id ?? null
         let storeRow = null
-        if (next) {
+
+        if (storeId) {
+            storeRow = stores.find((s) => s.id === storeId)
+                ?? (sel.chain_data
+                    ? { id: storeId, name: sel.store_name, chain_id: sel.chain_id, chain_data: sel.chain_data }
+                    : null)
+        } else if (sel.store_name?.trim()) {
+            const next = sel.store_name.trim()
             const found = stores.find((s) => (s.name ?? '').trim().toLowerCase() === next.toLowerCase())
             if (found?.id) {
                 storeId = found.id
                 storeRow = found
             } else {
-                const chain = storeChains.find((c) => (c.name ?? '').trim().toLowerCase() === next.toLowerCase())
-                const created = await upsertStore({ name: next, chain_id: chain?.id ?? null })
+                const chain = sel.chain_data
+                    ?? storeChains.find((c) => (c.name ?? '').trim().toLowerCase() === next.toLowerCase())
+                    ?? null
+                const created = await upsertStore({ name: next, chain_id: chain?.id ?? sel.chain_id ?? null })
                 storeId = created?.id ?? null
                 if (created) {
                     storeRow = { ...created, chain_data: chain ?? null }
@@ -114,10 +215,9 @@ export default function GroceryList() {
                 }
             }
         }
-        // product_entries has no store_name column; only store_id.
+
+        if (storeId === currentId) return
         await updateEntry(entry.id, { store_id: storeId })
-        // Hydrate nested store object locally so the logo updates inline
-        // without triggering a refetch/full-page spinner.
         patchEntry(entry.id, { store: storeRow })
     }
 
@@ -130,11 +230,50 @@ export default function GroceryList() {
         await updateEntry(entry.id, { unit: unit || null })
     }
 
+    const saveName = async (entry) => {
+        const raw = nameDrafts[entry.id]
+        if (raw == null) return
+        const name = raw.trim()
+        const current = (entry.name ?? '').trim()
+        if (!name || name === current) return
+        await updateEntry(entry.id, { name })
+    }
+
+    const saveBrand = async (entry) => {
+        const raw = brandDrafts[entry.id]
+        if (raw == null) return
+        const brand = raw.trim()
+        const current = (entry.brand ?? '').trim()
+        if (brand === current) return
+        await updateEntry(entry.id, { brand: brand || null })
+    }
+
     const toggleExpand = (id) => setExpandedId((prev) => prev === id ? null : id)
 
     const handleAdd = (method) => {
-        if (method === 'item') setDialogOpen(true)
+        if (method === 'item') {
+            setPickedInitial(null)
+            setPickerOpen(true)
+        }
         else if (method === 'basket') setBasketOpen(true)
+    }
+
+    const handlePickerSelect = (sel) => {
+        // sel: { name, category, subcategory, unit, defaultQty, store }
+        const { store, ...rest } = sel
+        setPickedInitial({
+            ...rest,
+            store_id: store?.store_id ?? null,
+            store_name: store?.store_name ?? '',
+            store_chain_id: store?.chain_id ?? null,
+        })
+        setPickerOpen(false)
+        setDialogOpen(true)
+    }
+
+    const handleAddDialogClose = () => {
+        setDialogOpen(false)
+        setPickedInitial(null)
     }
 
     const handleCatSlideStart = useCallback(() => {
@@ -229,6 +368,15 @@ export default function GroceryList() {
         if (activeCat !== 'All') {
             list = list.filter((e) => e.category === activeCat)
         }
+        if (storeFilter.length > 0) {
+            const set = new Set(storeFilter.map((s) => s.toLowerCase()))
+            const matchNone = set.has('__none__')
+            list = list.filter((e) => {
+                const name = (e.store?.chain_data?.name ?? e.store?.chain ?? e.store?.name ?? '').trim()
+                if (!name) return matchNone
+                return set.has(name.toLowerCase())
+            })
+        }
         if (q) {
             list = list.filter((e) => {
                 const hay = [
@@ -241,8 +389,12 @@ export default function GroceryList() {
         // Hide purchased (checked) items from the main list.
         list = list.filter((e) => !e.checked)
         return [...list].sort((a, b) => {
-            if (sortBy === 'name') {
-                return (a.name ?? '').localeCompare(b.name ?? '')
+            if (sortBy === 'added') {
+                // Newest first: listed_at, then created_at as fallback.
+                const av = a.listed_at ?? a.created_at ?? ''
+                const bv = b.listed_at ?? b.created_at ?? ''
+                if (av === bv) return (a.name ?? '').localeCompare(b.name ?? '')
+                return av < bv ? 1 : -1
             }
             // 'store': chain/store name ascending, unknown stores last.
             const aStore = (a.store?.chain_data?.name ?? a.store?.chain ?? a.store?.name ?? '').trim().toLowerCase()
@@ -254,7 +406,24 @@ export default function GroceryList() {
             if (aStore && !bStore) return -1
             return (a.name ?? '').localeCompare(b.name ?? '')
         })
-    }, [entries, activeCat, query, sortBy])
+    }, [entries, activeCat, query, sortBy, storeFilter])
+
+    // Distinct store/chain names present in the current listed entries,
+    // used to populate the store filter dropdown.
+    const storeFilterOptions = useMemo(() => {
+        const names = new Set()
+        let hasNoStore = false
+        for (const e of entries) {
+            if (e.checked) continue
+            const name = (e.store?.chain_data?.name ?? e.store?.chain ?? e.store?.name ?? '').trim()
+            if (name) names.add(name)
+            else hasNoStore = true
+        }
+        return {
+            names: [...names].sort((a, b) => a.localeCompare(b)),
+            hasNoStore,
+        }
+    }, [entries])
 
     const purchasedItems = useMemo(
         () => entries.filter((e) => e.checked),
@@ -284,6 +453,31 @@ export default function GroceryList() {
             await removeEntry(entry.id)
         }
     }, [purchasedItems, removeEntry])
+
+    // Apply a parsed receipt: update matched basket entries with
+    // price/store/purchased_at, and add unmatched items as new checked
+    // (purchased) basket entries so "All to pantry" picks them up.
+    const applyReceipt = useCallback(async ({ matched, newItems, storeRow }) => {
+        let updatedCount = 0
+        for (const m of matched) {
+            const ok = await updateEntry(m.entryId, m.fields)
+            if (ok) {
+                updatedCount++
+                if (storeRow) patchEntry(m.entryId, { store: storeRow })
+            }
+        }
+        let addedCount = 0
+        for (const it of newItems) {
+            const res = await addEntry({ ...it, checked: true, entry_source: 'receipt' })
+            if (res?.ok) addedCount++
+        }
+        const parts = []
+        if (updatedCount) parts.push(`${updatedCount} matched`)
+        if (addedCount) parts.push(`${addedCount} added`)
+        if (parts.length) {
+            setSnack({ severity: 'success', message: `Receipt applied: ${parts.join(', ')}` })
+        }
+    }, [updateEntry, addEntry, patchEntry])
 
     const categoryCounts = useMemo(() => {
         const map = { All: entries.length }
@@ -361,6 +555,93 @@ export default function GroceryList() {
                         <Divider sx={{ mb: 0.75 }} />
                         {/* ── Info ── */}
                         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0.5, mb: 0.5 }}>
+                            <Autocomplete
+                                freeSolo
+                                size="small"
+                                autoHighlight
+                                options={getNameOptions(entry.category)}
+                                groupBy={(o) => o.group || ''}
+                                getOptionLabel={(o) => typeof o === 'string' ? o : (o?.label ?? '')}
+                                filterOptions={(opts, state) => {
+                                    const q = state.inputValue.trim().toLowerCase()
+                                    if (!q) return opts.slice(0, 50)
+                                    return opts.filter((o) => o.label.toLowerCase().includes(q)).slice(0, 50)
+                                }}
+                                value={nameDrafts[entry.id] ?? (entry.name ?? '')}
+                                onChange={(_, v) => {
+                                    if (typeof v === 'string') {
+                                        setNameDrafts((prev) => ({ ...prev, [entry.id]: v }))
+                                    } else if (v) {
+                                        const patch = { name: v.name }
+                                        if (v.brand && !entry.brand) patch.brand = v.brand
+                                        if (v.category && !entry.category) patch.category = v.category
+                                        if (v.subcategory && !entry.subcategory) patch.subcategory = v.subcategory
+                                        if (v.unit && !entry.unit) patch.unit = v.unit
+                                        setNameDrafts((prev) => ({ ...prev, [entry.id]: v.name }))
+                                        updateEntry(entry.id, patch)
+                                    } else {
+                                        setNameDrafts((prev) => ({ ...prev, [entry.id]: '' }))
+                                    }
+                                }}
+                                onInputChange={(_, v, reason) => {
+                                    if (reason === 'input' || reason === 'clear') {
+                                        setNameDrafts((prev) => ({ ...prev, [entry.id]: v }))
+                                    }
+                                }}
+                                renderOption={(props, option) => (
+                                    <Box component="li" {...props} key={`${option.kind}-${option.label}`}>
+                                        <Stack>
+                                            <Typography variant="body2">{option.label}</Typography>
+                                            {(option.subcategory || option.unit) && (
+                                                <Typography variant="caption" color="text.secondary">
+                                                    {[option.subcategory, option.unit && option.defaultQty
+                                                        ? `${option.defaultQty} ${option.unit}`
+                                                        : option.unit].filter(Boolean).join(' · ')}
+                                                </Typography>
+                                            )}
+                                        </Stack>
+                                    </Box>
+                                )}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Name"
+                                        onBlur={() => saveName(entry)}
+                                    />
+                                )}
+                                sx={{ gridColumn: '1 / -1' }}
+                            />
+                            <Autocomplete
+                                freeSolo
+                                size="small"
+                                autoHighlight
+                                options={getBrandOptions(entry.store?.chain_id ?? findChainByName(entry.store?.name ?? '')?.id ?? null)}
+                                groupBy={(o) => o.group || ''}
+                                getOptionLabel={(o) => typeof o === 'string' ? o : (o?.label ?? '')}
+                                filterOptions={(opts, state) => {
+                                    const q = state.inputValue.trim().toLowerCase()
+                                    if (!q) return opts.slice(0, 50)
+                                    return opts.filter((o) => o.label.toLowerCase().includes(q)).slice(0, 50)
+                                }}
+                                value={brandDrafts[entry.id] ?? (entry.brand ?? '')}
+                                onChange={(_, v) => {
+                                    const next = typeof v === 'string' ? v : (v?.label ?? '')
+                                    setBrandDrafts((prev) => ({ ...prev, [entry.id]: next }))
+                                }}
+                                onInputChange={(_, v, reason) => {
+                                    if (reason === 'input' || reason === 'clear') {
+                                        setBrandDrafts((prev) => ({ ...prev, [entry.id]: v }))
+                                    }
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Brand"
+                                        onBlur={() => saveBrand(entry)}
+                                    />
+                                )}
+                                sx={{ gridColumn: '1 / -1' }}
+                            />
                             <TextField
                                 size="small"
                                 label="Quantity"
@@ -385,22 +666,21 @@ export default function GroceryList() {
                                     />
                                 )}
                             />
-                            <Autocomplete
-                                freeSolo
-                                options={storeSuggestions}
-                                value={storeDrafts[entry.id] ?? (entry.store_name ?? entry.store?.name ?? '')}
-                                onInputChange={(_, v) => setStoreDrafts((prev) => ({ ...prev, [entry.id]: v ?? '' }))}
-                                onChange={(_, v) => setStoreDrafts((prev) => ({ ...prev, [entry.id]: v ?? '' }))}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        size="small"
-                                        label="Store"
-                                        onBlur={() => saveStore(entry)}
-                                    />
-                                )}
-                                sx={{ gridColumn: '1 / -1' }}
-                            />
+                            <Box sx={{ gridColumn: '1 / -1' }}>
+                                <StorePicker
+                                    label="Store"
+                                    value={{
+                                        store_id: entry.store_id ?? entry.store?.id ?? null,
+                                        store_name: entry.store?.name ?? '',
+                                        chain_id: entry.store?.chain_id ?? entry.store?.chain_data?.id ?? null,
+                                        chain_data: entry.store?.chain_data ?? null,
+                                    }}
+                                    onChange={(sel) => applyStoreSelection(entry, sel)}
+                                    stores={stores}
+                                    storeChains={storeChains}
+                                    recentStoreIds={recentStoreIds}
+                                />
+                            </Box>
                             {entry.ean && (
                                 <Typography variant="caption" color="text.secondary">
                                     <b>EAN:</b> {entry.ean}
@@ -548,58 +828,106 @@ export default function GroceryList() {
                     onCatSlideChange={handleCatSlideChange}
                     counts={categoryCounts}
                 />
-                {!loading && (
-                    <Box sx={{ px: 2, pb: 0.75, display: 'flex', gap: 0.75, alignItems: 'center' }}>
-                        <TextField
-                            size="small"
-                            placeholder="Search…"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            sx={{
-                                flex: 1, minWidth: 0,
-                                '& .MuiInputBase-root': { height: 32, fontSize: 13 },
-                                '& .MuiInputBase-input': { py: 0.25 },
-                            }}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start" sx={{ mr: 0.5 }}>
-                                        <SearchIcon sx={{ fontSize: 16 }} />
-                                    </InputAdornment>
-                                ),
-                                endAdornment: query ? (
-                                    <InputAdornment position="end">
-                                        <IconButton size="small" onClick={() => setQuery('')} sx={{ p: 0.25 }}>
-                                            <ClearIcon sx={{ fontSize: 16 }} />
-                                        </IconButton>
-                                    </InputAdornment>
-                                ) : null,
-                            }}
-                        />
-                        <ToggleButtonGroup
-                            size="small"
-                            exclusive
-                            value={sortBy}
-                            onChange={(_, v) => v && setSortBy(v)}
-                            aria-label="Sort by"
-                            sx={{
-                                '& .MuiToggleButton-root': {
-                                    py: 0.25, px: 1, fontSize: 11, lineHeight: 1.2, height: 32,
-                                },
-                            }}
-                        >
-                            <ToggleButton value="store">Store</ToggleButton>
-                            <ToggleButton value="name">Name</ToggleButton>
-                        </ToggleButtonGroup>
-                    </Box>
-                )}
+                <Box sx={{ px: 2, pb: 0.75, display: 'flex', gap: 0.75, alignItems: 'center' }}>
+                    <TextField
+                        size="small"
+                        placeholder="Search…"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        sx={{
+                            flex: 1, minWidth: 0,
+                            '& .MuiInputBase-root': { height: 32, fontSize: 13 },
+                            '& .MuiInputBase-input': { py: 0.25 },
+                        }}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start" sx={{ mr: 0.5 }}>
+                                    <SearchIcon sx={{ fontSize: 16 }} />
+                                </InputAdornment>
+                            ),
+                            endAdornment: query ? (
+                                <InputAdornment position="end">
+                                    <IconButton size="small" onClick={() => setQuery('')} sx={{ p: 0.25 }}>
+                                        <ClearIcon sx={{ fontSize: 16 }} />
+                                    </IconButton>
+                                </InputAdornment>
+                            ) : null,
+                        }}
+                    />
+                    <TextField
+                        select
+                        size="small"
+                        label="Store"
+                        value={storeFilter}
+                        onChange={(e) => {
+                            const v = e.target.value
+                            setStoreFilter(typeof v === 'string' ? v.split(',') : v)
+                        }}
+                        InputLabelProps={{ shrink: true }}
+                        SelectProps={{
+                            multiple: true,
+                            displayEmpty: true,
+                            notched: true,
+                            renderValue: (selected) => {
+                                if (!selected || selected.length === 0) return 'All'
+                                if (selected.length === 1) {
+                                    return selected[0] === '__none__' ? 'No store' : selected[0]
+                                }
+                                return `${selected.length} stores`
+                            },
+                            MenuProps: { PaperProps: { sx: { maxHeight: 320 } } },
+                        }}
+                        sx={{
+                            minWidth: 110,
+                            '& .MuiInputBase-root': { height: 32, fontSize: 12 },
+                            '& .MuiInputLabel-root': { fontSize: 12 },
+                        }}
+                    >
+                        {storeFilterOptions.names.map((n) => (
+                            <MenuItem key={n} value={n} sx={{ py: 0.25 }}>
+                                <Checkbox
+                                    size="small"
+                                    checked={storeFilter.indexOf(n) > -1}
+                                    sx={{ p: 0.5, mr: 0.5 }}
+                                />
+                                <ListItemText primary={n} primaryTypographyProps={{ fontSize: 13 }} />
+                            </MenuItem>
+                        ))}
+                        {storeFilterOptions.hasNoStore && (
+                            <MenuItem value="__none__" sx={{ py: 0.25 }}>
+                                <Checkbox
+                                    size="small"
+                                    checked={storeFilter.indexOf('__none__') > -1}
+                                    sx={{ p: 0.5, mr: 0.5 }}
+                                />
+                                <ListItemText primary={<em>No store</em>} primaryTypographyProps={{ fontSize: 13 }} />
+                            </MenuItem>
+                        )}
+                    </TextField>
+                    <TextField
+                        select
+                        size="small"
+                        label="Sort by"
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        sx={{
+                            minWidth: 130,
+                            '& .MuiInputBase-root': { height: 32, fontSize: 12 },
+                            '& .MuiInputLabel-root': { fontSize: 12 },
+                        }}
+                    >
+                        <MenuItem value="added">Added on</MenuItem>
+                        <MenuItem value="store">Store</MenuItem>
+                    </TextField>
+                </Box>
             </Box>
 
             {/* In-flow spacer */}
             <Box sx={{ height: navbarHeight }} aria-hidden />
 
             {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
-                    <CircularProgress />
+                <Box sx={{ px: 2, pt: 1, minHeight: '60vh' }}>
+                    <SkeletonList rows={7} avatarSize={32} />
                 </Box>
             ) : (
                 <Box
@@ -679,16 +1007,45 @@ export default function GroceryList() {
                         </DialogActions>
                     </>
                 )}
-                <DialogActions sx={{ px: 2, pb: 1.5 }}>
+                <Divider />
+                <DialogActions sx={{ justifyContent: 'space-between', px: 2, py: 1 }}>
+                    <Button
+                        size="small"
+                        startIcon={<ReceiptLongIcon />}
+                        onClick={() => setReceiptOpen(true)}
+                        sx={{ textTransform: 'none' }}
+                    >
+                        Scan receipt
+                    </Button>
                     <Button onClick={() => setBasketOpen(false)} sx={{ color: 'text.secondary' }}>Close</Button>
                 </DialogActions>
             </Dialog>
 
+            <ReceiptImportDialog
+                open={receiptOpen}
+                onClose={() => setReceiptOpen(false)}
+                matchTargets={purchasedItems}
+                onApplyMatches={applyReceipt}
+                title="Scan basket receipt"
+                onAddItems={() => { }}
+            />
+
             <ManualAddDialog
                 open={dialogOpen}
-                onClose={() => setDialogOpen(false)}
+                onClose={handleAddDialogClose}
                 onAdd={addEntry}
                 mode="list"
+                initial={pickedInitial}
+            />
+
+            <ProductPickerDialog
+                open={pickerOpen}
+                onClose={() => setPickerOpen(false)}
+                onSelect={handlePickerSelect}
+                recentEntries={recentEntries}
+                stores={stores}
+                storeChains={storeChains}
+                recentStoreIds={recentStoreIds}
             />
 
             {/* ── Delete confirmation ── */}
