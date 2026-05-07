@@ -1,49 +1,31 @@
 import { useState } from 'react'
 import { Box, Button, TextField, Typography, Stack, Alert } from '@mui/material'
 import EmailIcon from '@mui/icons-material/Email'
-import LoginIcon from '@mui/icons-material/Login'
 import { supabase } from '../../lib/supabase'
 
 export default function Auth() {
     const [email, setEmail] = useState('')
-    const [otp, setOtp] = useState('')
-    const [step, setStep] = useState('email') // 'email' | 'otp'
+    const [sent, setSent] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
-    const [message, setMessage] = useState(null)
 
-    const handleSendOtp = async (e) => {
-        e.preventDefault()
-        setLoading(true)
-        setError(null)
-        setMessage(null)
-
-        const { error } = await supabase.auth.signInWithOtp({ email })
-
-        if (error) {
-            setError(error.message)
-        } else {
-            setMessage('Check your email for the login code.')
-            setStep('otp')
-        }
-        setLoading(false)
-    }
-
-    const handleVerifyOtp = async (e) => {
+    const handleSendMagicLink = async (e) => {
         e.preventDefault()
         setLoading(true)
         setError(null)
 
-        const { error } = await supabase.auth.verifyOtp({
+        const { error } = await supabase.auth.signInWithOtp({
             email,
-            token: otp,
-            type: 'email',
+            options: {
+                emailRedirectTo: window.location.origin + import.meta.env.BASE_URL,
+            },
         })
 
         if (error) {
             setError(error.message)
+        } else {
+            setSent(true)
         }
-        // On success, onAuthStateChange in authStore picks up the session automatically
         setLoading(false)
     }
 
@@ -53,16 +35,20 @@ export default function Auth() {
                 Welcome to Lebensmittel
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                {step === 'email'
-                    ? 'Enter your email to receive a one-time login code.'
-                    : `We sent a 6-digit code to ${email}`}
+                {sent
+                    ? `We sent a magic sign-in link to ${email}. Open it on this device to finish signing in.`
+                    : 'Enter your email to receive a magic sign-in link.'}
             </Typography>
 
             {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-            {message && step === 'otp' && <Alert severity="info" sx={{ mb: 2 }}>{message}</Alert>}
+            {sent && (
+                <Alert severity="success" sx={{ mb: 2 }}>
+                    Magic link sent. Check your inbox (and spam folder).
+                </Alert>
+            )}
 
-            {step === 'email' ? (
-                <Stack component="form" onSubmit={handleSendOtp} spacing={2}>
+            {!sent ? (
+                <Stack component="form" onSubmit={handleSendMagicLink} spacing={2}>
                     <TextField
                         label="Email"
                         type="email"
@@ -79,38 +65,17 @@ export default function Auth() {
                         loading={loading}
                         fullWidth
                     >
-                        Send login code
+                        Send magic link
                     </Button>
                 </Stack>
             ) : (
-                <Stack component="form" onSubmit={handleVerifyOtp} spacing={2}>
-                    <TextField
-                        label="6-digit code"
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                        required
-                        fullWidth
-                        autoFocus
-                        inputProps={{ inputMode: 'numeric', maxLength: 6 }}
-                    />
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        startIcon={<LoginIcon />}
-                        loading={loading}
-                        disabled={otp.length < 6}
-                        fullWidth
-                    >
-                        Verify & sign in
-                    </Button>
-                    <Button
-                        variant="text"
-                        size="small"
-                        onClick={() => { setStep('email'); setOtp(''); setError(null); setMessage(null) }}
-                    >
-                        Use a different email
-                    </Button>
-                </Stack>
+                <Button
+                    variant="text"
+                    size="small"
+                    onClick={() => { setSent(false); setError(null) }}
+                >
+                    Use a different email
+                </Button>
             )}
 
             {import.meta.env.DEV && (
