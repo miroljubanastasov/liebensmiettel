@@ -17,6 +17,7 @@ import Cooking from './pages/Cooking'
 import Nutrition from './pages/Nutrition'
 import Budget from './pages/Budget'
 import Household from './pages/Household'
+import InvitePage, { PENDING_TOKEN_KEY } from './pages/Invite'
 import SkeletonList from './components/layout/SkeletonList'
 
 const NAV_ROUTES = [
@@ -32,9 +33,22 @@ function AppShell() {
   const location = useLocation()
   const currentTab = NAV_ROUTES.findIndex((r) => r.path === location.pathname)
 
+  // After login, if we stashed an invite token, jump to the invite page.
+  useEffect(() => {
+    const token = localStorage.getItem(PENDING_TOKEN_KEY)
+    if (token) {
+      localStorage.removeItem(PENDING_TOKEN_KEY)
+      navigate(`/invite/${token}`)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const hideNav = location.pathname.startsWith('/invite/')
+
   return (
-    <Box sx={{ pb: 7 }}>
+    <Box sx={{ pb: hideNav ? 0 : 7 }}>
       <Routes>
+        <Route path="/invite/:token" element={<InvitePage />} />
         <Route path="/" element={<Pantry />} />
         <Route path="/list" element={<GroceryList />} />
         <Route path="/cooking" element={<Cooking />} />
@@ -43,18 +57,20 @@ function AppShell() {
         <Route path="/household" element={<Household />} />
       </Routes>
 
-      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1200, bgcolor: 'secondary.main' }} elevation={3}>
-        <BottomNavigation
-          value={currentTab === -1 ? 0 : currentTab}
-          onChange={(_, v) => navigate(NAV_ROUTES[v].path)}
-          showLabels
-          sx={{ bgcolor: 'secondary.main' }}
-        >
-          {NAV_ROUTES.map(({ label, icon }) => (
-            <BottomNavigationAction key={label} label={label} icon={icon} />
-          ))}
-        </BottomNavigation>
-      </Paper>
+      {!hideNav && (
+        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1200, bgcolor: 'secondary.main' }} elevation={3}>
+          <BottomNavigation
+            value={currentTab === -1 ? 0 : currentTab}
+            onChange={(_, v) => navigate(NAV_ROUTES[v].path)}
+            showLabels
+            sx={{ bgcolor: 'secondary.main' }}
+          >
+            {NAV_ROUTES.map(({ label, icon }) => (
+              <BottomNavigationAction key={label} label={label} icon={icon} />
+            ))}
+          </BottomNavigation>
+        </Paper>
+      )}
     </Box>
   )
 }
@@ -113,7 +129,12 @@ export default function App() {
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Auth />
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
+          <Routes>
+            <Route path="/invite/:token" element={<InvitePage />} />
+            <Route path="*" element={<Auth />} />
+          </Routes>
+        </BrowserRouter>
       </ThemeProvider>
     )
   }

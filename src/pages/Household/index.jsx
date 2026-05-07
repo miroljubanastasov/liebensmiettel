@@ -16,6 +16,8 @@ import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
 import EditIcon from '@mui/icons-material/Edit'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import LinkIcon from '@mui/icons-material/Link'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { useNavigate } from 'react-router-dom'
 import TopBar from '../../components/layout/TopBar'
 import { supabase } from '../../lib/supabase'
@@ -58,6 +60,10 @@ export default function Household() {
 
     // Switch-household confirmation
     const [switchInvite, setSwitchInvite] = useState(null)
+
+    // Last created invite link (for copy)
+    const [lastInviteLink, setLastInviteLink] = useState(null)
+    const [linkCopied, setLinkCopied] = useState(false)
 
     const isCreator = household?.created_by === user?.id
 
@@ -154,17 +160,49 @@ export default function Household() {
         loadData()
     }
 
-    // Send invite
+    // Send invite — email is optional. Returns a shareable link via the
+    // generated token.
     const handleInvite = async () => {
-        if (!inviteEmail.trim() || !profile?.household_id) return
-        await supabase.from('household_invites').insert({
-            household_id: profile.household_id,
-            email: inviteEmail.trim().toLowerCase(),
-            invited_by: user.id,
-        })
+        if (!profile?.household_id) return
+        const email = inviteEmail.trim().toLowerCase() || null
+        const { data, error } = await supabase
+            .from('household_invites')
+            .insert({
+                household_id: profile.household_id,
+                email,
+                invited_by: user.id,
+            })
+            .select('token')
+            .single()
+        if (error || !data?.token) {
+            setInviteOpen(false)
+            setInviteEmail('')
+            return
+        }
+        const url = `${window.location.origin}${import.meta.env.BASE_URL}invite/${data.token}`
+            .replace(/([^:])\/\//g, '$1/')
+        setLastInviteLink(url)
+        setLinkCopied(false)
         setInviteOpen(false)
         setInviteEmail('')
         loadData()
+    }
+
+    // Build a share URL for an existing invite row
+    const inviteUrlFor = (inv) =>
+        `${window.location.origin}${import.meta.env.BASE_URL}invite/${inv.token}`
+            .replace(/([^:])\/\//g, '$1/')
+
+    const copyToClipboard = async (text) => {
+        try {
+            await navigator.clipboard.writeText(text)
+            setLastInviteLink(text)
+            setLinkCopied(true)
+            setTimeout(() => setLinkCopied(false), 2000)
+        } catch {
+            // Fallback: show in dialog so user can copy manually
+            setLastInviteLink(text)
+        }
     }
 
     // Accept invite — if user is already in a household, confirm the switch
@@ -349,11 +387,11 @@ export default function Household() {
                                     </Typography>
                                     <Button
                                         size="small"
-                                        startIcon={<EmailIcon />}
+                                        startIcon={<LinkIcon />}
                                         onClick={() => setInviteOpen(true)}
                                         sx={{ textTransform: 'none', color: 'text.primary' }}
                                     >
-                                        Invite
+                                        Create Link
                                     </Button>
                                 </Box>
 
@@ -365,15 +403,27 @@ export default function Household() {
                                                 <ListItem>
                                                     <ListItemAvatar>
                                                         <Avatar sx={{ bgcolor: 'background.default', color: 'text.primary', width: 36, height: 36, border: '1px solid', borderColor: 'divider' }}>
-                                                            <EmailIcon sx={{ fontSize: 18 }} />
+                                                            {inv.email
+                                                                ? <EmailIcon sx={{ fontSize: 18 }} />
+                                                                : <LinkIcon sx={{ fontSize: 18 }} />}
                                                         </Avatar>
                                                     </ListItemAvatar>
                                                     <ListItemText
-                                                        primary={inv.email}
+                                                        primary={inv.email || 'Link invite'}
                                                         secondary={`${inv.status} · ${new Date(inv.created_at).toLocaleDateString('de-DE')}`}
                                                         primaryTypographyProps={{ variant: 'body2' }}
                                                         secondaryTypographyProps={{ variant: 'caption' }}
                                                     />
+                                                    {inv.status === 'pending' && inv.token && (
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={() => copyToClipboard(inviteUrlFor(inv))}
+                                                            title="Copy invite link"
+                                                            sx={{ mr: 0.5 }}
+                                                        >
+                                                            <ContentCopyIcon fontSize="small" sx={{ color: 'text.secondary' }} />
+                                                        </IconButton>
+                                                    )}
                                                     <Chip
                                                         size="small"
                                                         label={inv.status}
@@ -526,14 +576,16 @@ export default function Household() {
                 sx={{ zIndex: 2200 }}
                 PaperProps={{ sx: { borderRadius: '8px' } }}
             >
-                <DialogTitle>Invite to Household</DialogTitle>
+                <DialogTitle>Create Invite</DialogTitle>
                 <DialogContent>
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                        The invited person must have a Liebensmittel account with this email.
+                        Generate a shareable invite link. Optionally add the
+                        invitee's email so they'll see the invite in-app once
+                        they sign in with that address.
                     </Typography>
                     <TextField
                         autoFocus fullWidth
-                        label="Email address"
+                        label="Email (optional)"
                         type="email"
                         value={inviteEmail}
                         onChange={(e) => setInviteEmail(e.target.value)}
@@ -543,7 +595,46 @@ export default function Household() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setInviteOpen(false)} sx={{ color: 'text.secondary' }}>Cancel</Button>
-                    <Button onClick={handleInvite} disabled={!inviteEmail.trim()} variant="contained">Send Invite</Button>
+                    <Button onClick={handleInvite} variant="contained">Create Link</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* ── Invite Link Created Dialog ── */}
+            <Dialog
+                open={Boolean(lastInviteLink)}
+                onClose={() => setLastInviteLink(null)}
+                fullWidth maxWidth="xs"
+                sx={{ zIndex: 2200 }}
+                PaperProps={{ sx: { borderRadius: '8px' } }}
+            >
+                <DialogTitle>Invite Link</DialogTitle>
+                <DialogContent>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        Share this link with the person you want to invite. It
+                        expires in 7 days.
+                    </Typography>
+                    <TextField
+                        fullWidth
+                        value={lastInviteLink || ''}
+                        InputProps={{ readOnly: true }}
+                        size="small"
+                        onFocus={(e) => e.target.select()}
+                    />
+                    {linkCopied && (
+                        <Typography variant="caption" color="success.main" sx={{ mt: 1, display: 'block' }}>
+                            Copied to clipboard
+                        </Typography>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setLastInviteLink(null)} sx={{ color: 'text.secondary' }}>Close</Button>
+                    <Button
+                        onClick={() => copyToClipboard(lastInviteLink)}
+                        variant="contained"
+                        startIcon={<ContentCopyIcon fontSize="small" />}
+                    >
+                        Copy
+                    </Button>
                 </DialogActions>
             </Dialog>
             {/* ── Switch Household Confirm Dialog ── */}
