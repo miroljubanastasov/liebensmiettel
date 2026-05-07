@@ -17,13 +17,20 @@
       // back into a real URL via history.replaceState.
       (function () {
         var l = window.location;
-        if (l.search.startsWith('?/')) {
-          var decoded = l.search.slice(2).split('&').map(function (s) {
-            return s.replace(/~and~/g, '&');
-          });
+        if (l.search.startsWith("?/")) {
+          var decoded = l.search
+            .slice(2)
+            .split("&")
+            .map(function (s) {
+              return s.replace(/~and~/g, "&");
+            });
           var path = decoded.shift();
-          var query = decoded.length ? '?' + decoded.join('&') : '';
-          window.history.replaceState(null, '', l.pathname.replace(/\/$/, '') + '/' + path + query + l.hash);
+          var query = decoded.length ? "?" + decoded.join("&") : "";
+          window.history.replaceState(
+            null,
+            "",
+            l.pathname.replace(/\/$/, "") + "/" + path + query + l.hash,
+          );
         }
       })();
     </script>
