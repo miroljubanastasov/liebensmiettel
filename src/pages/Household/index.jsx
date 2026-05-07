@@ -27,10 +27,13 @@ export default function Household() {
     const profile = useAuthStore((s) => s.profile)
     const household = useAuthStore((s) => s.household)
     const refreshProfile = useAuthStore((s) => s.refreshProfile)
+    const pendingInvites = useAuthStore((s) => s.pendingInvites)
+    const loadPendingInvites = useAuthStore((s) => s.loadPendingInvites)
+    const acceptInviteAction = useAuthStore((s) => s.acceptInvite)
+    const declineInviteAction = useAuthStore((s) => s.declineInvite)
 
     const [members, setMembers] = useState([])
     const [invites, setInvites] = useState([])
-    const [pendingInvites, setPendingInvites] = useState([])
     const [loading, setLoading] = useState(true)
 
     // Create household dialog
@@ -53,6 +56,9 @@ export default function Household() {
     const [renameOpen, setRenameOpen] = useState(false)
     const [renameName, setRenameName] = useState('')
 
+    // Switch-household confirmation
+    const [switchInvite, setSwitchInvite] = useState(null)
+
     const isCreator = household?.created_by === user?.id
 
     // Load household data
@@ -73,16 +79,7 @@ export default function Household() {
     }, [profile?.household_id])
 
     // Load invites addressed to current user (to accept/decline)
-    const loadPendingInvites = useCallback(async () => {
-        if (!user?.email) return
-        const { data } = await supabase
-            .from('household_invites')
-            .select('*, households(name)')
-            .eq('email', user.email)
-            .eq('status', 'pending')
-        setPendingInvites(data ?? [])
-    }, [user?.email])
-
+    // (state lives in the auth store; just refresh on mount)
     useEffect(() => { loadData() }, [loadData])
     useEffect(() => { loadPendingInvites() }, [loadPendingInvites])
 
@@ -170,24 +167,27 @@ export default function Household() {
         loadData()
     }
 
-    // Accept invite
+    // Accept invite — if user is already in a household, confirm the switch
     const handleAcceptInvite = async (invite) => {
-        await supabase.from('household_invites')
-            .update({ status: 'accepted' })
-            .eq('id', invite.id)
-        await supabase.from('profiles')
-            .update({ household_id: invite.household_id })
-            .eq('id', user.id)
-        refreshProfile()
-        loadPendingInvites()
+        if (profile?.household_id && profile.household_id !== invite.household_id) {
+            setSwitchInvite(invite)
+            return
+        }
+        await acceptInviteAction(invite)
+        loadData()
+    }
+
+    // Confirmed switch from existing household to invited one
+    const handleConfirmSwitch = async () => {
+        if (!switchInvite) return
+        await acceptInviteAction(switchInvite)
+        setSwitchInvite(null)
+        loadData()
     }
 
     // Decline invite
     const handleDeclineInvite = async (invite) => {
-        await supabase.from('household_invites')
-            .update({ status: 'declined' })
-            .eq('id', invite.id)
-        loadPendingInvites()
+        await declineInviteAction(invite)
     }
 
     // Leave household
@@ -544,6 +544,29 @@ export default function Household() {
                 <DialogActions>
                     <Button onClick={() => setInviteOpen(false)} sx={{ color: 'text.secondary' }}>Cancel</Button>
                     <Button onClick={handleInvite} disabled={!inviteEmail.trim()} variant="contained">Send Invite</Button>
+                </DialogActions>
+            </Dialog>
+            {/* ── Switch Household Confirm Dialog ── */}
+            <Dialog
+                open={Boolean(switchInvite)}
+                onClose={() => setSwitchInvite(null)}
+                fullWidth maxWidth="xs"
+                sx={{ zIndex: 2200 }}
+                PaperProps={{ sx: { borderRadius: '8px' } }}
+            >
+                <DialogTitle>Switch Household?</DialogTitle>
+                <DialogContent>
+                    <Typography variant="body2" color="text.secondary">
+                        You are already a member of <strong>{household?.name}</strong>.
+                        A user can belong to only one household. Accepting this
+                        invite will move you to{' '}
+                        <strong>{switchInvite?.households?.name || 'the new household'}</strong>
+                        {' '}and decline any other pending invites.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setSwitchInvite(null)} sx={{ color: 'text.secondary' }}>Cancel</Button>
+                    <Button onClick={handleConfirmSwitch} variant="contained">Switch</Button>
                 </DialogActions>
             </Dialog>
         </Box>

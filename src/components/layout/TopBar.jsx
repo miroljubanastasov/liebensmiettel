@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AppBar, Toolbar, Box, IconButton, Typography, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material'
+import { AppBar, Toolbar, Box, IconButton, Typography, Menu, MenuItem, ListItemIcon, ListItemText, Badge } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import HomeIcon from '@mui/icons-material/Home'
@@ -12,6 +12,7 @@ export default function TopBar({ static: isStatic = false }) {
     const navigate = useNavigate()
     const user = useAuthStore((s) => s.user)
     const signOut = useAuthStore((s) => s.signOut)
+    const pendingInviteCount = useAuthStore((s) => s.pendingInvites.length)
     const [anchorEl, setAnchorEl] = useState(null)
     const open = Boolean(anchorEl)
 
@@ -41,7 +42,14 @@ export default function TopBar({ static: isStatic = false }) {
 
                 {/* 3-dots menu — right side */}
                 <IconButton size="small" onClick={handleOpen}>
-                    <MoreVertIcon sx={{ color: 'text.primary' }} />
+                    <Badge
+                        color="primary"
+                        variant="dot"
+                        invisible={pendingInviteCount === 0}
+                        overlap="circular"
+                    >
+                        <MoreVertIcon sx={{ color: 'text.primary' }} />
+                    </Badge>
                 </IconButton>
                 <Menu
                     anchorEl={anchorEl}
@@ -61,7 +69,21 @@ export default function TopBar({ static: isStatic = false }) {
                         <ListItemIcon sx={{ color: 'text.primary' }}>
                             <HomeIcon fontSize="small" />
                         </ListItemIcon>
-                        <ListItemText primary="Household" primaryTypographyProps={{ color: 'text.primary' }} />
+                        <ListItemText
+                            primary="Household"
+                            secondary={pendingInviteCount > 0
+                                ? `${pendingInviteCount} pending invite${pendingInviteCount === 1 ? '' : 's'}`
+                                : undefined}
+                            primaryTypographyProps={{ color: 'text.primary' }}
+                            secondaryTypographyProps={{ color: 'primary.main', fontSize: 11 }}
+                        />
+                        {pendingInviteCount > 0 && (
+                            <Badge
+                                badgeContent={pendingInviteCount}
+                                color="primary"
+                                sx={{ ml: 2, mr: 1 }}
+                            />
+                        )}
                     </MenuItem>
                     <MenuItem onClick={() => { handleClose(); signOut() }}>
                         <ListItemIcon sx={{ color: 'text.primary' }}>
