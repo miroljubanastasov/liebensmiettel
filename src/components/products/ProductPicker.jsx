@@ -8,6 +8,8 @@ import SearchIcon from '@mui/icons-material/Search'
 import ClearIcon from '@mui/icons-material/Clear'
 import EditIcon from '@mui/icons-material/Edit'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
+import BarcodeScannerDialog from './BarcodeScannerDialog'
 import { CATEGORIES } from '../../utils/classify'
 import {
     getSubcategoriesForCategory,
@@ -61,20 +63,32 @@ function GridTile({ icon, label, sublabel, selected, dashed, onClick }) {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'flex-start',
-                gap: 0.75,
-                p: 1,
+                gap: 0.5,
+                p: 0.5,
                 borderRadius: 2,
-                border: dashed ? '1px dashed' : '1px solid',
-                borderColor: selected ? 'primary.main' : 'divider',
-                backgroundColor: selected ? 'action.selected' : 'background.paper',
                 width: '100%',
-                minHeight: 100,
                 textAlign: 'center',
-                transition: 'border-color .15s, background-color .15s',
-                '&:hover': { borderColor: 'primary.light', backgroundColor: 'action.hover' },
             }}
         >
-            <Box sx={{ width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <Box
+                sx={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    border: dashed ? '1px dashed' : '1px solid',
+                    borderColor: selected ? 'primary.main' : 'divider',
+                    backgroundColor: selected ? 'action.selected' : 'background.paper',
+                    transition: 'border-color .15s, background-color .15s',
+                    '.MuiButtonBase-root:hover &': {
+                        borderColor: 'primary.light',
+                        backgroundColor: 'action.hover',
+                    },
+                }}
+            >
                 {icon}
             </Box>
             <Typography
@@ -144,6 +158,7 @@ export function ProductPickerDialog({
     storeChains = [],
     recentStoreIds = [],
     initialStore = null, // { store_id, store_name, chain_id, chain_data }
+    onScan = null, // (code) => void — when provided, shows a Scan button at the top
 }) {
     const [step, setStep] = useState(STEP_CATEGORY)
     const [category, setCategory] = useState(null)
@@ -151,6 +166,7 @@ export function ProductPickerDialog({
     const [query, setQuery] = useState('')
     const [customName, setCustomName] = useState('')
     const [store, setStore] = useState(initialStore)
+    const [scannerOpen, setScannerOpen] = useState(false)
 
     // Reset when opened. If a category/subcategory is already set on the
     // entry being edited, jump straight to the relevant step so users don't
@@ -317,6 +333,23 @@ export function ProductPickerDialog({
         })
     }
 
+    // Submit the current `query` as a product name directly, bypassing the
+    // remaining steps. Used when the user types in the top input and presses
+    // Enter — they shouldn't have to drill into category/subcategory tiles
+    // just to type a name.
+    const submitTypedName = () => {
+        const name = query.trim()
+        if (!name) return
+        const generic = getGenericByName(name)
+        emit({
+            name,
+            category: generic?.category ?? category,
+            subcategory: generic?.subcategory ?? subcategory,
+            unit: generic?.defaultUnit ?? null,
+            defaultQty: generic?.defaultQty ?? null,
+        })
+    }
+
     // ── Render helpers ────────────────────────────────────────────────────
     const renderTile = (it) => {
         const selected =
@@ -350,174 +383,217 @@ export function ProductPickerDialog({
                     : 'Custom product name'
 
     return (
-        <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-            <DialogTitle sx={{ pb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-                {step !== STEP_CATEGORY && (
-                    <IconButton size="small" onClick={goBack} edge="start">
-                        <ArrowBackIcon fontSize="small" />
-                    </IconButton>
-                )}
-                <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Typography variant="h6" component="div" sx={{ lineHeight: 1.2 }}>
-                        {title}
-                    </Typography>
-                    {(category || subcategory) && (
-                        <Breadcrumbs separator="›" sx={{ mt: 0.25 }}>
-                            {category && (
-                                <MUILink
-                                    component="button"
-                                    type="button"
-                                    underline="hover"
-                                    color={step === STEP_CATEGORY ? 'text.primary' : 'inherit'}
-                                    onClick={() => {
-                                        setSubcategory(null)
-                                        setStep(STEP_SUBCATEGORY)
-                                        setQuery('')
-                                    }}
-                                    sx={{ fontSize: 12 }}
-                                >
-                                    {category}
-                                </MUILink>
-                            )}
-                            {subcategory && (
-                                <Typography variant="caption" color="text.primary">
-                                    {subcategory}
-                                </Typography>
-                            )}
-                        </Breadcrumbs>
+        <>
+            <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+                <DialogTitle sx={{ pb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    {step !== STEP_CATEGORY && (
+                        <IconButton size="small" onClick={goBack} edge="start">
+                            <ArrowBackIcon fontSize="small" />
+                        </IconButton>
                     )}
-                </Box>
-            </DialogTitle>
-            <DialogContent dividers sx={{ pt: 1.5 }}>
-                {step !== STEP_CUSTOM && (
-                    <TextField
-                        size="small"
-                        fullWidth
-                        autoFocus
-                        placeholder={
-                            step === STEP_CATEGORY ? 'Search categories…'
-                                : step === STEP_SUBCATEGORY ? 'Search subcategories…'
-                                    : 'Search products…'
-                        }
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon fontSize="small" />
-                                </InputAdornment>
-                            ),
-                            endAdornment: query ? (
-                                <InputAdornment position="end">
-                                    <IconButton size="small" onClick={() => setQuery('')}>
-                                        <ClearIcon fontSize="small" />
-                                    </IconButton>
-                                </InputAdornment>
-                            ) : null,
-                        }}
-                        sx={{ mb: 2 }}
-                    />
-                )}
-
-                {step === STEP_CUSTOM ? (
-                    <Stack gap={1.5}>
-                        <Typography variant="body2" color="text.secondary">
-                            Type any product name. Category{' '}
-                            <b>{category ?? '—'}</b>
-                            {subcategory ? <> / <b>{subcategory}</b></> : null} will be applied.
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <Typography variant="h6" component="div" sx={{ lineHeight: 1.2 }}>
+                            {title}
                         </Typography>
-                        <TextField
-                            size="small"
-                            fullWidth
-                            autoFocus
-                            label="Product name"
-                            value={customName}
-                            onChange={(e) => setCustomName(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    e.preventDefault()
-                                    confirmCustom()
+                        {(category || subcategory) && (
+                            <Breadcrumbs separator="›" sx={{ mt: 0.25 }}>
+                                {category && (
+                                    <MUILink
+                                        component="button"
+                                        type="button"
+                                        underline="hover"
+                                        color={step === STEP_CATEGORY ? 'text.primary' : 'inherit'}
+                                        onClick={() => {
+                                            setSubcategory(null)
+                                            setStep(STEP_SUBCATEGORY)
+                                            setQuery('')
+                                        }}
+                                        sx={{ fontSize: 12 }}
+                                    >
+                                        {category}
+                                    </MUILink>
+                                )}
+                                {subcategory && (
+                                    <Typography variant="caption" color="text.primary">
+                                        {subcategory}
+                                    </Typography>
+                                )}
+                            </Breadcrumbs>
+                        )}
+                    </Box>
+                </DialogTitle>
+                <DialogContent dividers sx={{ pt: 1.5 }}>
+                    {step !== STEP_CUSTOM && (
+                        <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start', mb: 1.5 }}>
+                            <TextField
+                                size="small"
+                                fullWidth
+                                autoFocus
+                                label="Product name"
+                                placeholder={
+                                    step === STEP_CATEGORY ? 'Type name or filter categories…'
+                                        : step === STEP_SUBCATEGORY ? 'Type name or filter subcategories…'
+                                            : 'Type name or filter products…'
                                 }
-                            }}
-                        />
-                        <Stack direction="row" gap={1} justifyContent="flex-end">
-                            <Button onClick={goBack}>Back</Button>
-                            <Button
-                                variant="contained"
-                                disabled={!customName.trim()}
-                                onClick={confirmCustom}
-                            >Use</Button>
-                        </Stack>
-                    </Stack>
-                ) : (
-                    <>
-                        <Box
-                            sx={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(auto-fill, minmax(96px, 1fr))',
-                                gap: 1,
-                            }}
-                        >
-                            {/* Custom-name tile is always available, surfaced first on the
-                                product step (where typing a name is most natural) and last
-                                on category/subcategory steps. */}
-                            {step === STEP_PRODUCT && (
-                                <GridTile
-                                    label="Custom…"
-                                    dashed
-                                    onClick={openCustom}
-                                    icon={<EditIcon sx={{ color: 'text.secondary', fontSize: 32 }} />}
-                                />
-                            )}
-
-                            {filtered.map(renderTile)}
-
-                            {step !== STEP_PRODUCT && (
-                                <GridTile
-                                    label="Custom…"
-                                    dashed
-                                    onClick={openCustom}
-                                    icon={<EditIcon sx={{ color: 'text.secondary', fontSize: 32 }} />}
-                                />
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault()
+                                        submitTypedName()
+                                    }
+                                }}
+                                helperText={query ? 'Press Enter to use this name directly' : ' '}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <SearchIcon fontSize="small" />
+                                        </InputAdornment>
+                                    ),
+                                    endAdornment: query ? (
+                                        <InputAdornment position="end">
+                                            <Button size="small" onClick={submitTypedName} sx={{ minWidth: 0, mr: 0.5 }}>Use</Button>
+                                            <IconButton size="small" onClick={() => setQuery('')}>
+                                                <ClearIcon fontSize="small" />
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ) : null,
+                                }}
+                            />
+                            {onScan && (
+                                <IconButton
+                                    onClick={() => setScannerOpen(true)}
+                                    sx={{
+                                        mt: 0.25,
+                                        border: '1px solid',
+                                        borderColor: 'divider',
+                                        borderRadius: '50%',
+                                        width: 40,
+                                        height: 40,
+                                        flexShrink: 0,
+                                        color: 'primary.main',
+                                    }}
+                                    title="Scan barcode"
+                                >
+                                    <QrCodeScannerIcon />
+                                </IconButton>
                             )}
                         </Box>
+                    )}
 
-                        {filtered.length === 0 && query && (
-                            <Box sx={{ textAlign: 'center', py: 2, color: 'text.secondary' }}>
-                                <Typography variant="body2">
-                                    No matches. Use <b>Custom…</b> to enter a name.
-                                </Typography>
+                    {step === STEP_CUSTOM ? (
+                        <Stack gap={1.5}>
+                            <Typography variant="body2" color="text.secondary">
+                                Type any product name. Category{' '}
+                                <b>{category ?? '—'}</b>
+                                {subcategory ? <> / <b>{subcategory}</b></> : null} will be applied.
+                            </Typography>
+                            <TextField
+                                size="small"
+                                fullWidth
+                                autoFocus
+                                label="Product name"
+                                value={customName}
+                                onChange={(e) => setCustomName(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault()
+                                        confirmCustom()
+                                    }
+                                }}
+                            />
+                            <Stack direction="row" gap={1} justifyContent="flex-end">
+                                <Button onClick={goBack}>Back</Button>
+                                <Button
+                                    variant="contained"
+                                    disabled={!customName.trim()}
+                                    onClick={confirmCustom}
+                                >Use</Button>
+                            </Stack>
+                        </Stack>
+                    ) : (
+                        <>
+                            <Box
+                                sx={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(auto-fill, minmax(96px, 1fr))',
+                                    gap: 1,
+                                }}
+                            >
+                                {/* Custom-name tile is always available, surfaced first on the
+                                product step (where typing a name is most natural) and last
+                                on category/subcategory steps. */}
+                                {step === STEP_PRODUCT && (
+                                    <GridTile
+                                        label="Custom…"
+                                        dashed
+                                        onClick={openCustom}
+                                        icon={<EditIcon sx={{ color: 'text.secondary', fontSize: 32 }} />}
+                                    />
+                                )}
+
+                                {filtered.map(renderTile)}
+
+                                {step !== STEP_PRODUCT && (
+                                    <GridTile
+                                        label="Custom…"
+                                        dashed
+                                        onClick={openCustom}
+                                        icon={<EditIcon sx={{ color: 'text.secondary', fontSize: 32 }} />}
+                                    />
+                                )}
                             </Box>
-                        )}
-                    </>
-                )}
-            </DialogContent>
-            {/* Always-visible store selector pinned at the bottom of the
+
+                            {filtered.length === 0 && query && (
+                                <Box sx={{ textAlign: 'center', py: 2, color: 'text.secondary' }}>
+                                    <Typography variant="body2">
+                                        No matches. Use <b>Custom…</b> to enter a name.
+                                    </Typography>
+                                </Box>
+                            )}
+                        </>
+                    )}
+                </DialogContent>
+                {/* Always-visible store selector pinned at the bottom of the
                 wizard. Persists across category/subcategory/product steps so
                 users can pick "where" before or after "what". */}
-            {(stores.length > 0 || storeChains.length > 0) && (
-                <Box
-                    sx={{
-                        borderTop: '1px solid',
-                        borderColor: 'divider',
-                        px: 1.5, pt: 1, pb: 0.5,
-                        bgcolor: 'background.paper',
+                {(stores.length > 0 || storeChains.length > 0) && (
+                    <Box
+                        sx={{
+                            borderTop: '1px solid',
+                            borderColor: 'divider',
+                            px: 1.5, pt: 1, pb: 0.5,
+                            bgcolor: 'background.paper',
+                        }}
+                    >
+                        <StoreStrip
+                            label="Store"
+                            value={store ?? undefined}
+                            onChange={setStore}
+                            stores={stores}
+                            storeChains={storeChains}
+                            recentStoreIds={recentStoreIds}
+                        />
+                    </Box>
+                )}
+                <DialogActions>
+                    <Button onClick={onClose}>Cancel</Button>
+                </DialogActions>
+            </Dialog>
+            {onScan && (
+                <BarcodeScannerDialog
+                    open={scannerOpen}
+                    onClose={() => setScannerOpen(false)}
+                    onDetected={(code) => {
+                        setScannerOpen(false)
+                        if (code) {
+                            onScan(code)
+                            onClose()
+                        }
                     }}
-                >
-                    <StoreStrip
-                        label="Store"
-                        value={store ?? undefined}
-                        onChange={setStore}
-                        stores={stores}
-                        storeChains={storeChains}
-                        recentStoreIds={recentStoreIds}
-                    />
-                </Box>
+                />
             )}
-            <DialogActions>
-                <Button onClick={onClose}>Cancel</Button>
-            </DialogActions>
-        </Dialog>
+        </>
     )
 }
 

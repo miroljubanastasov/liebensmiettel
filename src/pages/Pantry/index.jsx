@@ -46,6 +46,7 @@ export default function Pantry() {
     const [pickerOpen, setPickerOpen] = useState(false)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [pickedInitial, setPickedInitial] = useState(null)
+    const [pickedEan, setPickedEan] = useState('')
     // const [receiptDialogOpen, setReceiptDialogOpen] = useState(false)
     // const [shoppingDialogOpen, setShoppingDialogOpen] = useState(false)
     const [expandedId, setExpandedId] = useState(null)
@@ -167,6 +168,17 @@ export default function Pantry() {
     const handleAddDialogClose = () => {
         setDialogOpen(false)
         setPickedInitial(null)
+        setPickedEan('')
+    }
+
+    // Picker scanned an EAN — skip the wizard and open ManualAddDialog with
+    // the code prefilled. ManualAddDialog will autofill name/brand/nutrition
+    // from Open Food Facts via its `initialEan` effect.
+    const handlePickerScan = (code) => {
+        setPickedInitial(null)
+        setPickedEan(code)
+        setPickerOpen(false)
+        setDialogOpen(true)
     }
 
     // Handle a scanned EAN from the barcode dialog.
@@ -630,6 +642,7 @@ export default function Pantry() {
                 open={pickerOpen}
                 onClose={() => setPickerOpen(false)}
                 onSelect={handlePickerSelect}
+                onScan={handlePickerScan}
                 recentEntries={recentEntries}
                 stores={stores}
                 storeChains={storeChains}
@@ -642,6 +655,7 @@ export default function Pantry() {
                 onAdd={addEntry}
                 mode="pantry"
                 initial={pickedInitial}
+                initialEan={pickedEan}
             />
 
             {/* Paused: receipt import + return-from-shopping. Scaffolding kept

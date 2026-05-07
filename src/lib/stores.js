@@ -104,11 +104,24 @@ export async function upsertStore({ name, address = null, city = null, chain_id 
         .maybeSingle()
     if (existing) return existing
 
-    const { data, error } = await supabase
+    const insert = (chainIdValue) => supabase
         .from('stores')
-        .insert({ name: cleanName, address, city, chain_id })
+        .insert({ name: cleanName, address, city, chain_id: chainIdValue })
         .select('id, name, chain, chain_id, address, city')
         .single()
+
+    let { data, error } = await insert(chain_id)
+
+    // Hosted Supabase projects often miss the `store_chains` seed (the CLI
+    // only seeds local DBs), so a chain_id like 'lidl' fails the FK. Retry
+    // without the chain so the store is at least linkable to the product.
+    if (error && chain_id && /foreign key|store_chains_pkey|chain_id_fkey/i.test(error.message)) {
+        console.warn('[upsertStore] chain_id FK failed, retrying without chain:', error.message)
+        const retry = await insert(null)
+        data = retry.data
+        error = retry.error
+    }
+
     if (error) {
         console.error('[upsertStore]', error.message)
         return null

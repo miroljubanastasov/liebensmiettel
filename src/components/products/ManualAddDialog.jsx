@@ -3,7 +3,7 @@ import {
     Dialog, DialogTitle, DialogContent, DialogActions,
     Button, TextField, Box, MenuItem, InputAdornment, Autocomplete,
     ToggleButton, ToggleButtonGroup, Typography, Chip, Divider, Stack,
-    CircularProgress, Tooltip, IconButton,
+    CircularProgress, Tooltip, IconButton, Alert,
 } from '@mui/material'
 import AcUnitIcon from '@mui/icons-material/AcUnit'
 import KitchenIcon from '@mui/icons-material/Kitchen'
@@ -231,6 +231,11 @@ export default function ManualAddDialog({
                 chain_id: form.store_chain_id ?? null,
             })
             storeId = created?.id ?? null
+            if (!storeId) {
+                setSaving(false)
+                setFieldError(`Could not save store "${form.store_name.trim()}". Check console for details.`)
+                return
+            }
         }
 
         const result = await onAdd({
@@ -269,26 +274,41 @@ export default function ManualAddDialog({
                 <DialogContent>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
 
+                        {fieldError && (
+                            <Alert severity="error" onClose={() => setFieldError('')}>
+                                {fieldError}
+                            </Alert>
+                        )}
+
                         {mode === 'pantry' && (
-                            <TextField
-                                label="EAN / Barcode"
-                                value={form.ean}
-                                onChange={(e) => set('ean', e.target.value)}
-                                onBlur={() => form.ean && handleEan(form.ean)}
-                                size="small" fullWidth
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            {eanLoading && <CircularProgress size={18} sx={{ mr: 1 }} />}
-                                            <Button
-                                                size="small"
-                                                startIcon={<QrCodeScannerIcon />}
-                                                onClick={() => setScannerOpen(true)}
-                                            >Scan</Button>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size="large"
+                                    startIcon={<QrCodeScannerIcon />}
+                                    onClick={() => setScannerOpen(true)}
+                                    fullWidth
+                                    disabled={eanLoading}
+                                >
+                                    {form.ean ? `Scan again (${form.ean})` : 'Scan barcode to add product'}
+                                </Button>
+                                <TextField
+                                    label="EAN / Barcode"
+                                    value={form.ean}
+                                    onChange={(e) => set('ean', e.target.value)}
+                                    onBlur={() => form.ean && handleEan(form.ean)}
+                                    size="small" fullWidth
+                                    placeholder="…or enter manually"
+                                    InputProps={{
+                                        endAdornment: eanLoading ? (
+                                            <InputAdornment position="end">
+                                                <CircularProgress size={18} />
+                                            </InputAdornment>
+                                        ) : null,
+                                    }}
+                                />
+                            </Box>
                         )}
 
                         <ProductPicker
