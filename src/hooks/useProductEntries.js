@@ -2,6 +2,43 @@ import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../store/authStore'
 import { classifyProduct } from '../utils/classify'
+import { getStoreChain } from '../data/storeChains'
+import { findChainByName } from '../lib/stores'
+
+/**
+ * Ensure `row.store.chain_data` is populated for the UI. The DB join through
+ * `chain_data:store_chains` returns null when the hosted project hasn't
+ * seeded the `store_chains` table — fall back to the bundled JS catalogue
+ * so logos still show up in production.
+ */
+function hydrateStoreChainData(row) {
+    const s = row?.store
+    if (!s || s.chain_data) return row
+    let resolved = null
+    if (s.chain_id) resolved = getStoreChain(s.chain_id)
+    if (!resolved && s.chain) {
+        const id = findChainByName(s.chain)
+        if (id) resolved = getStoreChain(id)
+    }
+    if (!resolved && s.name) {
+        const id = findChainByName(s.name)
+        if (id) resolved = getStoreChain(id)
+    }
+    if (!resolved) return row
+    return {
+        ...row,
+        store: {
+            ...s,
+            chain_id: s.chain_id ?? resolved.id,
+            chain_data: {
+                id: resolved.id,
+                name: resolved.name,
+                logo_url: resolved.logo_url ?? null,
+                color: resolved.color ?? null,
+            },
+        },
+    }
+}
 
 /**
  * Reads and writes product_entries for a given status scope.
@@ -74,7 +111,7 @@ export function useProductEntries(status) {
             }
         }
 
-        setEntries(rows)
+        setEntries(rows.map(hydrateStoreChainData))
         setLoading(false)
     }, [status, user])
 
@@ -160,7 +197,7 @@ export function useProductEntries(status) {
             }
         }
 
-        setEntries((prev) => [enriched, ...prev])
+        setEntries((prev) => [hydrateStoreChainData(enriched), ...prev])
         return { ok: true, data: enriched }
     }, [status, user])
 
@@ -192,7 +229,7 @@ export function useProductEntries(status) {
         }
 
         setEntries((prev) => prev.map((e) =>
-            e.id === id ? { ...e, ...fields, ...(storePatch ?? {}) } : e
+            e.id === id ? hydrateStoreChainData({ ...e, ...fields, ...(storePatch ?? {}) }) : e
         ))
         return true
     }, [])

@@ -30,7 +30,7 @@ function cosineSimilarity(a, b) {
 async function loadCatalogue() {
     if (_catalogue) return _catalogue
     try {
-        const resp = await fetch('/data/subcategory-embeddings.json')
+        const resp = await fetch(`${import.meta.env.BASE_URL}data/subcategory-embeddings.json`)
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
         _catalogue = await resp.json()
         const subN = _catalogue.subcategoryCount ?? '?'
