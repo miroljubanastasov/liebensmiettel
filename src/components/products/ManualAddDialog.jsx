@@ -30,6 +30,13 @@ const LOCATIONS = [
     { value: 'pantry', label: 'Pantry', icon: <InventoryIcon fontSize="small" /> },
 ]
 const NUTRI_GRADES = ['a', 'b', 'c', 'd', 'e']
+const EXPIRY_PRESETS = [
+    { label: '+3d', days: 3 },
+    { label: '+1w', days: 7 },
+    { label: '+2w', days: 14 },
+    { label: '+1m', days: 30 },
+    { label: '+3m', days: 90 },
+]
 
 const EMPTY = {
     name: '', brand: '', ean: '',
@@ -219,6 +226,17 @@ export default function ManualAddDialog({
         })
         if (iso) set('expiry_date', iso)
     }, [form.category, form.subcategory, form.location])
+    const nudgeExpiryDate = useCallback((days) => {
+        const base = form.expiry_date ? new Date(`${form.expiry_date}T12:00:00`) : new Date()
+        if (Number.isNaN(base.getTime())) return
+        base.setDate(base.getDate() + days)
+        set('expiry_date', base.toISOString().slice(0, 10))
+    }, [form.expiry_date])
+    const applyExpiryPreset = useCallback((days) => {
+        const d = new Date()
+        d.setDate(d.getDate() + days)
+        set('expiry_date', d.toISOString().slice(0, 10))
+    }, [])
 
     const handleSave = async () => {
         if (!form.name.trim()) { setFieldError('Name is required'); return }
@@ -428,7 +446,7 @@ export default function ManualAddDialog({
                                     InputLabelProps={{ shrink: true }}
                                     helperText={suggestedShelfLifeDays != null && !form.expiry_date
                                         ? `typisch ~${suggestedShelfLifeDays} Tage`
-                                        : ' '}
+                                        : 'Schnellwahl: Presets oder +/- nutzen'}
                                     InputProps={{
                                         endAdornment: (
                                             <InputAdornment position="end">
@@ -448,6 +466,20 @@ export default function ManualAddDialog({
                                         ),
                                     }}
                                 />
+                                <Stack direction="row" gap={0.5} flexWrap="wrap">
+                                    {EXPIRY_PRESETS.map((preset) => (
+                                        <Chip
+                                            key={preset.label}
+                                            size="small"
+                                            variant="outlined"
+                                            label={preset.label}
+                                            onClick={() => applyExpiryPreset(preset.days)}
+                                        />
+                                    ))}
+                                    <Chip size="small" label="-1d" onClick={() => nudgeExpiryDate(-1)} />
+                                    <Chip size="small" label="+1d" onClick={() => nudgeExpiryDate(1)} />
+                                    <Chip size="small" label="+7d" onClick={() => nudgeExpiryDate(7)} />
+                                </Stack>
                             </>
                         )}
 
