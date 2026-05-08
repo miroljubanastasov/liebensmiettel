@@ -55,6 +55,7 @@ export default function Pantry() {
     const [snack, setSnack] = useState(null) // { severity, message }
     // Filtering / sorting UI
     const [query, setQuery] = useState('')
+    const [locationFilter, setLocationFilter] = useState([])
     const [sortBy, setSortBy] = useState('shelved') // 'shelved' | 'expiry'
     const catRef = useRef(null)
     const touchStart = useRef(null)
@@ -307,6 +308,15 @@ export default function Pantry() {
         if (activeCat !== 'All') {
             list = list.filter((e) => e.category === activeCat)
         }
+        if (locationFilter.length > 0) {
+            const set = new Set(locationFilter.map((s) => s.toLowerCase()))
+            const matchNone = set.has('__none__')
+            list = list.filter((e) => {
+                const location = (e.location ?? '').trim()
+                if (!location) return matchNone
+                return set.has(location.toLowerCase())
+            })
+        }
         if (q) {
             list = list.filter((e) => {
                 const hay = [
@@ -328,7 +338,21 @@ export default function Pantry() {
             if (!bv) return -1
             return av < bv ? -dir : dir
         })
-    }, [entries, activeCat, query, sortBy])
+    }, [entries, activeCat, query, sortBy, locationFilter])
+
+    const locationFilterOptions = useMemo(() => {
+        const names = new Set()
+        let hasNoLocation = false
+        for (const e of entries) {
+            const name = (e.location ?? '').trim()
+            if (name) names.add(name)
+            else hasNoLocation = true
+        }
+        return {
+            names: [...names].sort((a, b) => a.localeCompare(b)),
+            hasNoLocation,
+        }
+    }, [entries])
 
     const categoryCounts = useMemo(() => {
         const map = { All: entries.length }
@@ -590,6 +614,56 @@ export default function Pantry() {
                             ) : null,
                         }}
                     />
+                    <TextField
+                        select
+                        size="small"
+                        label="Location"
+                        value={locationFilter}
+                        onChange={(e) => {
+                            const v = e.target.value
+                            setLocationFilter(typeof v === 'string' ? v.split(',') : v)
+                        }}
+                        InputLabelProps={{ shrink: true }}
+                        SelectProps={{
+                            multiple: true,
+                            displayEmpty: true,
+                            notched: true,
+                            renderValue: (selected) => {
+                                if (!selected || selected.length === 0) return 'All'
+                                if (selected.length === 1) {
+                                    return selected[0] === '__none__' ? 'No location' : selected[0]
+                                }
+                                return `${selected.length} locations`
+                            },
+                            MenuProps: { PaperProps: { sx: { maxHeight: 320 } } },
+                        }}
+                        sx={{
+                            minWidth: 120,
+                            '& .MuiInputBase-root': { height: 32, fontSize: 12 },
+                            '& .MuiInputLabel-root': { fontSize: 12 },
+                        }}
+                    >
+                        {locationFilterOptions.names.map((n) => (
+                            <MenuItem key={n} value={n} sx={{ py: 0.25 }}>
+                                <Checkbox
+                                    size="small"
+                                    checked={locationFilter.indexOf(n) > -1}
+                                    sx={{ p: 0.5, mr: 0.5 }}
+                                />
+                                <ListItemText primary={n} primaryTypographyProps={{ fontSize: 13 }} />
+                            </MenuItem>
+                        ))}
+                        {locationFilterOptions.hasNoLocation && (
+                            <MenuItem value="__none__" sx={{ py: 0.25 }}>
+                                <Checkbox
+                                    size="small"
+                                    checked={locationFilter.indexOf('__none__') > -1}
+                                    sx={{ p: 0.5, mr: 0.5 }}
+                                />
+                                <ListItemText primary={<em>No location</em>} primaryTypographyProps={{ fontSize: 13 }} />
+                            </MenuItem>
+                        )}
+                    </TextField>
                     <TextField
                         select
                         size="small"
