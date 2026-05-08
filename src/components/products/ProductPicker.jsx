@@ -349,10 +349,11 @@ export function ProductPickerDialog({
         })
     }
 
-    const currentSelectionName =
-        step === STEP_SUBCATEGORY ? category
-            : step === STEP_PRODUCT ? subcategory
-                : null
+    const currentSelectionName = (() => {
+        if (step === STEP_SUBCATEGORY) return category
+        if (step === STEP_PRODUCT) return subcategory
+        return null
+    })()
 
     const confirmCurrentSelection = () => {
         if (!currentSelectionName) return
@@ -591,7 +592,11 @@ export function ProductPickerDialog({
                 )}
                 <DialogActions>
                     {currentSelectionName && (
-                        <Button variant="contained" onClick={confirmCurrentSelection}>
+                        <Button
+                            variant="contained"
+                            onClick={confirmCurrentSelection}
+                            aria-label={`Use ${currentSelectionName} as item name`}
+                        >
                             Use “{currentSelectionName}”
                         </Button>
                     )}
