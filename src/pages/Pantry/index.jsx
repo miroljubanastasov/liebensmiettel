@@ -720,7 +720,6 @@ export default function Pantry() {
                         {consumeEntry?.name} — {consumeEntry?.quantity} {consumeEntry?.unit} in stock
                     </Typography>
                     <TextField
-                        autoFocus
                         fullWidth
                         label={`Amount used (${consumeEntry?.unit ?? ''})`}
                         type="number"

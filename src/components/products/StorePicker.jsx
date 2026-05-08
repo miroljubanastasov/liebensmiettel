@@ -294,7 +294,6 @@ export function StorePickerDialog({
                 <TextField
                     size="small"
                     fullWidth
-                    autoFocus
                     placeholder="Search stores…"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
@@ -389,7 +388,6 @@ export function StorePickerDialog({
                         <TextField
                             size="small"
                             fullWidth
-                            autoFocus
                             label="Custom store name"
                             value={customName}
                             onChange={(e) => setCustomName(e.target.value)}
@@ -662,7 +660,6 @@ export function StoreStrip({
                 <DialogTitle>Custom store</DialogTitle>
                 <DialogContent>
                     <TextField
-                        autoFocus
                         fullWidth
                         size="small"
                         label="Store name"

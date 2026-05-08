@@ -428,7 +428,6 @@ export function ProductPickerDialog({
                             <TextField
                                 size="small"
                                 fullWidth
-                                autoFocus
                                 label="Product name"
                                 placeholder={
                                     step === STEP_CATEGORY ? 'Type name or filter categories…'
@@ -491,7 +490,6 @@ export function ProductPickerDialog({
                             <TextField
                                 size="small"
                                 fullWidth
-                                autoFocus
                                 label="Product name"
                                 value={customName}
                                 onChange={(e) => setCustomName(e.target.value)}

@@ -510,7 +510,7 @@ export default function Household() {
                 <DialogTitle>Create Household</DialogTitle>
                 <DialogContent>
                     <TextField
-                        autoFocus fullWidth
+                        fullWidth
                         label="Household name"
                         value={householdName}
                         onChange={(e) => setHouseholdName(e.target.value)}
@@ -537,7 +537,7 @@ export default function Household() {
                 <DialogTitle>Rename Household</DialogTitle>
                 <DialogContent>
                     <TextField
-                        autoFocus fullWidth
+                        fullWidth
                         label="New name"
                         value={renameName}
                         onChange={(e) => setRenameName(e.target.value)}
@@ -562,7 +562,7 @@ export default function Household() {
                 <DialogTitle>{editingMember ? 'Edit Member' : 'Add Family Member'}</DialogTitle>
                 <DialogContent>
                     <TextField
-                        autoFocus fullWidth
+                        fullWidth
                         label="Name"
                         value={memberName}
                         onChange={(e) => setMemberName(e.target.value)}
@@ -619,7 +619,7 @@ export default function Household() {
                         <Alert severity="error" sx={{ mt: 1, mb: 1 }}>{inviteError}</Alert>
                     )}
                     <TextField
-                        autoFocus fullWidth
+                        fullWidth
                         label="Email (optional)"
                         type="email"
                         value={inviteEmail}
