@@ -17,6 +17,8 @@ const FETCH_LIMIT = 500
 
 export function useRecentEntries({ enabled = true } = {}) {
     const user = useAuthStore((s) => s.user)
+    const household = useAuthStore((s) => s.household)
+    const householdId = household?.id ?? null
     const [rows, setRows] = useState([])
     const [loading, setLoading] = useState(false)
 
@@ -29,14 +31,17 @@ export function useRecentEntries({ enabled = true } = {}) {
             .select('name, brand, category, subcategory, unit, location, ean, store_id')
             .order('created_at', { ascending: false })
             .limit(FETCH_LIMIT)
-        if (user) query = query.eq('user_id', user.id)
+        // Match the visibility rules used by useProductEntries: household
+        // members see the shared history; solo users see only their own.
+        if (householdId) query = query.eq('household_id', householdId)
+        else if (user) query = query.eq('user_id', user.id).is('household_id', null)
         query.then(({ data }) => {
             if (cancelled) return
             setRows(Array.isArray(data) ? data : [])
             setLoading(false)
         })
         return () => { cancelled = true }
-    }, [user, enabled])
+    }, [user, householdId, enabled])
 
     return { entries: rows, loading }
 }

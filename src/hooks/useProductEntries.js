@@ -46,6 +46,8 @@ function hydrateStoreChainData(row) {
  */
 export function useProductEntries(status) {
     const user = useAuthStore((s) => s.user)
+    const household = useAuthStore((s) => s.household)
+    const householdId = household?.id ?? null
     const [entries, setEntries] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -65,8 +67,13 @@ export function useProductEntries(status) {
             .eq('status', status)
             .order('created_at', { ascending: false })
 
-        if (user) {
-            query = query.eq('user_id', user.id)
+        // Household-shared scope: every member sees every entry tied to the
+        // same household_id. Solo users (no household) fall back to their
+        // own user_id so personal entries still show up.
+        if (householdId) {
+            query = query.eq('household_id', householdId)
+        } else if (user) {
+            query = query.eq('user_id', user.id).is('household_id', null)
         }
 
         const { data, error: err } = await query
@@ -113,7 +120,7 @@ export function useProductEntries(status) {
 
         setEntries(rows.map(hydrateStoreChainData))
         setLoading(false)
-    }, [status, user])
+    }, [status, user, householdId])
 
     useEffect(() => { fetch() }, [fetch])
 
@@ -143,6 +150,7 @@ export function useProductEntries(status) {
             ...fields,
             status,
             user_id: user?.id ?? null,
+            household_id: fields.household_id ?? householdId ?? null,
             entry_source: fields.entry_source ?? 'manual',
             listed_at: status === 'listed' ? now : null,
             shelved_at: status === 'in_pantry' ? now : null,
@@ -199,7 +207,7 @@ export function useProductEntries(status) {
 
         setEntries((prev) => [hydrateStoreChainData(enriched), ...prev])
         return { ok: true, data: enriched }
-    }, [status, user])
+    }, [status, user, householdId])
 
     /**
      * Update arbitrary fields on an entry.

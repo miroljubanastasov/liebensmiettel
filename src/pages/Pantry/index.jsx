@@ -78,6 +78,7 @@ export default function Pantry() {
     const [consumeQty, setConsumeQty] = useState('')
     const [consumeAddToShopping, setConsumeAddToShopping] = useState(false)
     const consumeUser = useAuthStore((s) => s.user)
+    const consumeHousehold = useAuthStore((s) => s.household)
 
     // Dispose confirmation dialog
     const [disposeEntry_, setDisposeEntry] = useState(null)
@@ -115,7 +116,7 @@ export default function Pantry() {
                 unit: consumeEntry.unit ?? null,
                 status: 'listed',
                 user_id: consumeUser?.id ?? null,
-                household_id: consumeEntry.household_id ?? null,
+                household_id: consumeEntry.household_id ?? consumeHousehold?.id ?? null,
                 entry_source: 'manual',
                 listed_at: now,
             })
