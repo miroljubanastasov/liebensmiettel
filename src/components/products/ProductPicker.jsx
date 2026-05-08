@@ -140,10 +140,8 @@ function rankBy(map, key) {
  *   { name: string, category: string|null, subcategory: string|null,
  *     unit: string|null, defaultQty: number|null }
  *
- * `name` is empty when the user picked a category/subcategory but no concrete
- * product. The caller (ManualAddDialog) requires a non-empty name to save,
- * so the dialog always offers a "Custom name…" tile to ensure the wizard
- * yields a usable result.
+ * Users can confirm the current intermediate selection (category/subcategory)
+ * directly, without drilling down to a concrete generic product.
  */
 export function ProductPickerDialog({
     open,
@@ -348,6 +346,23 @@ export function ProductPickerDialog({
             subcategory: generic?.subcategory ?? subcategory,
             unit: generic?.defaultUnit ?? null,
             defaultQty: generic?.defaultQty ?? null,
+        })
+    }
+
+    const currentSelectionName = (() => {
+        if (step === STEP_SUBCATEGORY) return category
+        if (step === STEP_PRODUCT) return subcategory
+        return null
+    })()
+
+    const confirmCurrentSelection = () => {
+        if (!currentSelectionName) return
+        emit({
+            name: currentSelectionName,
+            category,
+            subcategory: step === STEP_PRODUCT ? subcategory : null,
+            unit: null,
+            defaultQty: null,
         })
     }
 
@@ -576,6 +591,15 @@ export function ProductPickerDialog({
                     </Box>
                 )}
                 <DialogActions>
+                    {currentSelectionName && (
+                        <Button
+                            variant="contained"
+                            onClick={confirmCurrentSelection}
+                            aria-label={`Use ${currentSelectionName} as item name`}
+                        >
+                            Use “{currentSelectionName}”
+                        </Button>
+                    )}
                     <Button onClick={onClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>
