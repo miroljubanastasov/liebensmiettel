@@ -627,7 +627,6 @@ export default function Pantry() {
                         SelectProps={{
                             multiple: true,
                             displayEmpty: true,
-                            notched: true,
                             renderValue: (selected) => {
                                 if (!selected || selected.length === 0) return 'All'
                                 if (selected.length === 1) {
