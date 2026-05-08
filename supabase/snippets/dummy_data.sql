@@ -319,5 +319,9 @@ update public.product_entries
 set rating = (1 + floor(random() * 5)::int)
 where user_id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'
   and random() < 0.7;
-
+-- Attach all dummy entries to the test household so the household-scoped
+-- queries in useProductEntries return them for the dev-login user.
+update public.product_entries
+set household_id = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'
+where user_id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
 -- (EAN linkage is now inline in INSERT statements above)

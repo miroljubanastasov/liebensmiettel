@@ -63,17 +63,17 @@ function GridTile({ icon, label, sublabel, selected, dashed, onClick }) {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'flex-start',
-                gap: 0.5,
-                p: 0.5,
-                borderRadius: 2,
+                gap: 0.25,
+                p: 0.25,
+                borderRadius: 1.5,
                 width: '100%',
                 textAlign: 'center',
             }}
         >
             <Box
                 sx={{
-                    width: 64,
-                    height: 64,
+                    width: 44,
+                    height: 44,
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
@@ -95,6 +95,7 @@ function GridTile({ icon, label, sublabel, selected, dashed, onClick }) {
                 variant="caption"
                 sx={{
                     fontWeight: selected ? 700 : 500,
+                    fontSize: 11,
                     lineHeight: 1.15,
                     width: '100%',
                     overflow: 'hidden',
@@ -109,7 +110,7 @@ function GridTile({ icon, label, sublabel, selected, dashed, onClick }) {
                     variant="caption"
                     color="text.secondary"
                     sx={{
-                        fontSize: 10,
+                        fontSize: 9,
                         lineHeight: 1.1,
                         width: '100%',
                         overflow: 'hidden',
@@ -371,7 +372,7 @@ export function ProductPickerDialog({
                 sublabel={sublabel}
                 selected={selected}
                 onClick={onClick}
-                icon={<GlyphMask hex={it.iconHex} size={40} />}
+                icon={<GlyphMask hex={it.iconHex} size={28} />}
             />
         )
     }
@@ -514,8 +515,8 @@ export function ProductPickerDialog({
                             <Box
                                 sx={{
                                     display: 'grid',
-                                    gridTemplateColumns: 'repeat(auto-fill, minmax(96px, 1fr))',
-                                    gap: 1,
+                                    gridTemplateColumns: 'repeat(auto-fill, minmax(68px, 1fr))',
+                                    gap: 0.5,
                                 }}
                             >
                                 {/* Custom-name tile is always available, surfaced first on the
@@ -526,7 +527,7 @@ export function ProductPickerDialog({
                                         label="Custom…"
                                         dashed
                                         onClick={openCustom}
-                                        icon={<EditIcon sx={{ color: 'text.secondary', fontSize: 32 }} />}
+                                        icon={<EditIcon sx={{ color: 'text.secondary', fontSize: 22 }} />}
                                     />
                                 )}
 
@@ -537,7 +538,7 @@ export function ProductPickerDialog({
                                         label="Custom…"
                                         dashed
                                         onClick={openCustom}
-                                        icon={<EditIcon sx={{ color: 'text.secondary', fontSize: 32 }} />}
+                                        icon={<EditIcon sx={{ color: 'text.secondary', fontSize: 22 }} />}
                                     />
                                 )}
                             </Box>
