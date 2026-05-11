@@ -33,7 +33,7 @@ export default function TopBar({ static: isStatic = false }) {
                 {/* Centered title */}
                 <Box sx={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', textAlign: 'center' }}>
                     <Typography variant="h6" sx={{ mt: 2, mb: 0, color: 'primary.main', fontFamily: '"Mochiy Pop P One", sans-serif', fontWeight: 500, fontSize: 18, letterSpacing: 0, lineHeight: 0.4 }}>
-                        Lieblingsmittel
+                        Liebensmittel
                     </Typography>
                     <Typography variant="caption" sx={{ color: 'primary.main', fontFamily: '"Mochiy Pop P One", sans-serif', fontWeight: 200, fontSize: 8, letterSpacing: 0.05, opacity: 0.75, lineHeight: 0.5, mt: 0 }}>
                         Unsere Lieblingslebensmittel!
