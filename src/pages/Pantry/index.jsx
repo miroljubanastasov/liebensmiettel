@@ -540,7 +540,6 @@ export default function Pantry() {
                                                         )}
                                                         <Typography variant="caption" color="text.secondary">
                                                             <b>{entry.store.chain_data?.name ?? entry.store.chain ?? entry.store.name}</b>
-                                                            {' · '}{entry.store.name}
                                                         </Typography>
                                                     </Box>
                                                 )}
