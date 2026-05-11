@@ -36,7 +36,7 @@ export default function TopBar({ static: isStatic = false }) {
                         Liebensmittel
                     </Typography>
                     <Typography variant="caption" sx={{ color: 'primary.main', fontFamily: '"Mochiy Pop P One", sans-serif', fontWeight: 200, fontSize: 8, letterSpacing: 0.05, opacity: 0.75, lineHeight: 0.5, mt: 0 }}>
-                        Unsere Lieblingslebensmittel!
+                        Unsere liebens Lebensmittel!
                     </Typography>
                 </Box>
 
